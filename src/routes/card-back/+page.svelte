@@ -51,6 +51,7 @@
 	});
 
 	const resolvedColor = $derived(
+		printerFriendly && !data.backgroundImage ? '#000' :
 		data.textColor === 'black' ? '#000' :
 		data.textColor === 'green' ? '#16754A' :
 		'#fff'
