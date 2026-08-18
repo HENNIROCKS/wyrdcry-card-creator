@@ -480,7 +480,8 @@
 	}
 
 	.talents-text :global(strong),
-	.talents-text :global(em) {
+	.talents-text :global(em),
+	.talents-text :global(.caps) {
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -488,9 +489,6 @@
 
 	.talents-text :global(.caps) {
 		text-transform: uppercase;
-		border: 0;
-		outline: none;
-		background: transparent;
 	}
 
 	.talents-placeholder {
