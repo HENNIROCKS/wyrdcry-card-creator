@@ -27,8 +27,27 @@
 		</a>
 	</div>
 	<p class="text-zinc-500 text-sm text-center max-w-sm px-6">
-		{t('ui.tagline')}
+		<a
+			href="https://wyrdcry.net/"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="underline hover:text-zinc-300"
+		>
+			{t('ui.tagline-name')}
+		</a>
+		{t('ui.tagline-rest')}
 		{t('ui.disclaimer')}
+	</p>
+	<p class="text-zinc-500 text-sm text-center max-w-sm px-6">
+		{t('ui.credit')}
+		<a
+			href="https://hennirocks.github.io/warcry-card-creator-2026/"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="underline hover:text-zinc-300"
+		>
+			{t('ui.credit-link')}
+		</a>
 	</p>
 	<div class="flex flex-wrap justify-center items-center gap-x-3 gap-y-2">
 		<LangSwitch />

@@ -8,8 +8,11 @@
     ]
   },
   "ui": {
-    "tagline": "Ein Karten-Generator für Warhammer Age of Sigmar: Warcry, umgesetzt mit einer modernen technischen Basis.",
+    "tagline-name": "Wyrdcry",
+    "tagline-rest": "ist ein „unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim.“",
     "disclaimer": "Dieses Projekt ist ein Fanprojekt, das für die Community entwickelt wurde; es ist nicht kommerziell und steht in keiner Verbindung zu Games Workshop und wird auch nicht von diesem Unternehmen unterstützt.",
+    "credit": "Gefällt dir das? Schau dir auch den",
+    "credit-link": "Warcry Card Creator 2026",
     "last-updated": "Zuletzt aktualisiert",
     "dark-mode": "Dunkelmodus",
     "light-mode": "Hellmodus",

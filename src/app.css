@@ -58,6 +58,7 @@
 [data-theme="light"] .text-zinc-500 { color: #5a5048; }
 
 [data-theme="light"] .hover\:text-white:hover      { color: #1c1810; }
+[data-theme="light"] .hover\:text-zinc-300:hover   { color: #2e2620; }
 [data-theme="light"] .hover\:bg-zinc-800:hover     { background-color: #ede8e2; }
 [data-theme="light"] .hover\:bg-zinc-700:hover     { background-color: #c8c0b5; }
 [data-theme="light"] .hover\:bg-zinc-600:hover     { background-color: #b0a89c; }

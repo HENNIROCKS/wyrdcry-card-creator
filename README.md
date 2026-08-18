@@ -2,6 +2,8 @@
 
 A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.
 
+[Wyrdcry](https://wyrdcry.net/) is an "unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim."
+
 ## What it does
 
 Browser-based tool for creating custom Warcry cards. No backend, no login, everything runs client-side.
@@ -35,6 +37,8 @@ The tool ships with English and German. Adding a new language requires a single 
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for code style, architecture constraints, and how to submit a PR.
+
+Like this? Check out the [Warcry Card Creator 2026](https://hennirocks.github.io/warcry-card-creator-2026/), the project this tool was forked from.
 
 ## License
 

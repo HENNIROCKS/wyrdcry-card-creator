@@ -8,8 +8,11 @@
     ]
   },
   "ui": {
-    "tagline": "A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack.",
+    "tagline-name": "Wyrdcry",
+    "tagline-rest": "is an \"unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim.\"",
     "disclaimer": "This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.",
+    "credit": "You like this? Check out the",
+    "credit-link": "Warcry Card Creator 2026",
     "last-updated": "Last updated",
     "dark-mode": "Dark mode",
     "light-mode": "Light mode",
