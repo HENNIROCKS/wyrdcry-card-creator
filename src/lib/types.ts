@@ -33,23 +33,24 @@ export interface CardBackData {
 	logoSize: number; // px, width of the logo mark
 }
 
-export type ActivationType = 'double' | 'triple' | 'quad' | null;
+export interface TextCardWeapon {
+	name: string;
+	range: string;
+	attacks: string;
+	damage: string;
+	goldCoins: string;
+}
 
 export interface TextCardData {
 	name: string;
 	cardLabel: string;          // preset slug or custom string — see presetLabels in TextForm.svelte
-	activationType: ActivationType;
-	showActivation: boolean;
 	showFlavorText: boolean;
-	showPrerequisite: boolean;
-	showPointsTable: boolean;
-	flavorText: string;         // italic block; render order: flavor → points table → prerequisite → body
-	prerequisiteText: string;   // framed box, shown after points table if non-empty
+	showPrerequisite: boolean;  // forced off when cardLabel === 'weapon' — see TextForm.svelte
+	flavorText: string;         // italic block; render order: flavor → weapon table (cardLabel 'weapon' only) → prerequisite → body
+	weapons: TextCardWeapon[];  // weapon table rows, shown only when cardLabel === 'weapon'
+	prerequisiteText: string;   // framed box
 	bodyText: string;
 	showCaption: boolean;
 	imageCaption: string;
 	smallBodyText: boolean;
-	layoutVariant?: 'standard' | 'banderole';
-	regularPointsValue?: string; // points cost increases table (independent of card type)
-	elitePointsValue?: string;   // points cost increases table (independent of card type)
 }

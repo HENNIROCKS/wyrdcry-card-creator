@@ -15,15 +15,14 @@
 |---|---|
 | `meta` | File metadata — language name, code, direction. Not displayed directly. |
 | `ui` | Editor interface — buttons, labels, placeholders, tabs, export strings. |
-| `card` | Text rendered **on the card itself** — activation labels (Double/Triple/Quad), card type labels (Ability, Reaction…), column headers, name placeholders. |
+| `card` | Text rendered **on the card itself** — card type labels (Ability, Reaction…), column headers, name placeholders. |
 
 ## Line breaks in card text
 
 Values in the `card` and `weapons` namespaces are rendered directly on the card. Use `|` to insert a line break when a translated string is too long to fit in a column header or weapon name cell:
 
 ```json
-"col-defense": "Verteidi|gung",
-"activation-triple": "Dreier|pasch"
+"col-defense": "Verteidi|gung"
 ```
 
 The `|` character is stripped from dropdown option labels in the editor — it only affects the rendered card. The `ui` namespace does not support `|` line breaks.

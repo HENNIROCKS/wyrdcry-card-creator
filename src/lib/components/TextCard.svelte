@@ -7,11 +7,10 @@
 
 	let { data, printerFriendly = false }: { data: TextCardData; printerFriendly?: boolean } = $props();
 
-	const isBanderole = $derived(data.layoutVariant === 'banderole');
-
-	const presetSlugs = new Set(['ability', 'reaction', 'heroic-trait', 'battle-trait', 'lesser-artefact', 'greater-artefact', 'divine-blessing']);
+	const presetSlugs = new Set(['trait', 'ability', 'reaction', 'weapon', 'equipment']);
 
 	function resolveCardLabel(label: string): string {
+		if (label === 'weapon' && data.weapons.length > 1) return t('card.label-weapon-plural');
 		return presetSlugs.has(label) ? t('card.label-' + label) : label;
 	}
 
@@ -21,54 +20,29 @@
 			.replace(/\*(.+?)\*/g, '<em>$1</em>');
 	}
 
+	function formatRange(value: string): string {
+		if (!value) return '—';
+		return value === '0' ? value : `${value}"`;
+	}
+
 </script>
 
-<div class="card" class:is-printer-friendly={printerFriendly} class:is-banderole={isBanderole}>
+<div class="card" class:is-printer-friendly={printerFriendly}>
 
 	<!-- IMAGE SECTION -->
 	<div class="image-section">
-		{#if !isBanderole}
-			<div class="image-inner" style="mask-image: {maskUrl}; -webkit-mask-image: {maskUrl}; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"></div>
-		{/if}
-
-		{#if data.showActivation && data.activationType}
-			<div class="activation-row">
-				<div class="activation-badge-border">
-					<div class="activation-badge">
-						<span class="activation-text">{#each t(`card.activation-${data.activationType}`).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span>
-					</div>
-				</div>
-			</div>
-		{/if}
-
-		{#if isBanderole}
-			{#if data.cardLabel}
-				<div class="banderole">
-					<div class="banderole-bg" style="mask-image: {maskUrl}; -webkit-mask-image: {maskUrl}; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"></div>
-					{#if printerFriendly}
-						<svg class="banderole-outline" viewBox="-0.17 -0.23 1055.53 872.02" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-							<g transform="matrix(9.24671 0 0 13.6712 -.002 0)">
-								<path vector-effect="non-scaling-stroke" fill="none" stroke="black" stroke-width="1.5" fill-rule="nonzero" d="M113.72 61.34c-.27.424-1.22.216-1.496.51-.07.076-.216 1.73-.59.69-.266.73-3.614.576-4.44.74.96.776-.63.296-1.02.16.204-.094.416-.196.62-.29-.614-.476-1.126-.18-1.82-.104-.9.094-1.76-.104-2.62-.03-.806.076-1.386.314-2.19.27-1.046-.06-2.24-.21-3.23-.524-1.484-.466-2.906-.594-4.484-.55-.834.024-1.406.44-2.186.59-1.06.21-2.34.076-3.406-.05-.844-.1-1.626-.344-2.47-.216-.746.116-1.04.51-1.924.19-.25-.09-.61-.46-.82-.5-.334-.064-1.156.174-1.504.234-.86.146-1.614.384-2.5.4-.916.016-1.734-.304-2.58-.336-.75-.03-1.556.31-2.33.314-1.99.01-3.924-.04-5.924.02-1.484.046-3.594-.33-4.994.046-.454.12-.446.35-.924.344-.07 0 .04-.284-.186-.35-.41-.12-.93-.04-1.344-.046-1.906-.016-3.924.234-5.774-.29-.796-.226-1.476-.67-2.354-.6-.24.02-.494.01-.72.1-.296.116-.19.476-.31.54-1.414.756-3.97.204-5.56.344-.97.086-1.966.32-2.94.326-.744 0-1.534-.44-2.14-.376-.506.054-.86.43-1.47.436-.7.006-1.076-.3-1.696-.436-.71-.156-1.64-.094-2.35.064-.914.204-1.88 1-2.86.744-.376-.1-.476-.34-.79-.47-.61-.256-1.016-.216-1.7-.256-.83-.046-1.54-.03-2.364.02-.906.054-1.36-.344-2.144-.396-.734-.046-.246.16-.77.274-.606.134-1.214.116-1.856.12-1.22.006-2.434-.02-3.656-.054-1.106-.03-2.23.33-3.324.16-.984-.156-1.38-.604-2.48-.61-1.044-.006-1.366.296-2.22.884-.044-.28-.096-.56-.14-.84-.81.74-1.456-.06-2.416.024-.7.06-1.08.634-1.924.424-.37-.09-1.214-.896-1.73-.77-.614.146-.61.906-1.216.646-.416-.716-.54-.406-1.26-.116-.256-.564-.854-1.204-.26-1.59-.786-.42-.536-3.196-.53-4.05.006-.69.19-1.354.166-2.05-.016-.366-.03-.77-.146-1.12-.13-.4.06-.966-.39-.314-.104-.41.01-.73.074-1.134.154.18.304.36.46.534-.03-1.196.01-2.436-.11-3.6-.13-1.25-.19-2.39.12-3.64.46-1.854.386-3.314-.01-5.14-.276-1.26.256-2.554.256-3.796 0-.594-.31-1.11-.26-1.7.056-.604.34-1.024.336-1.64-.01-1.01-.376-1.964-.33-2.99.02-.454.21-.864.244-1.29.046-.52-.214-1.12-.22-1.656-.04-2.376-.066-4.766-.026-7.144.01-.64-.256-1.226-.27-1.766 0-.1.244-.76.27-.914.114-.734 0-1.574 0-2.32 0-1.21.294-2.164.54-3.33.21-.99-.28-1.28-.53-2.064-.37-1.17.016-2.77-.11-4.01-.136-1.32.09-2.47.09-3.75a.8.8 0 0 1-.156.14c.27-.426 1.22-.214 1.496-.51.07-.074.216-1.73.59-.69.266-.73 3.616-.574 4.44-.74-.96-.776.63-.294 1.02-.16-.206.094-.416.194-.62.29.616.476 1.126.18 1.82.104.9-.094 1.76.104 2.62.03.804-.074 1.384-.316 2.19-.27 1.044.06 2.24.21 3.23.526 1.484.464 2.906.594 4.484.55.836-.024 1.406-.44 2.184-.59 1.06-.21 2.34-.074 3.406.05.844.1 1.626.344 2.47.216.746-.114 1.04-.51 1.926-.19.25.09.61.46.82.5.336.064 1.156-.176 1.506-.236.86-.146 1.616-.386 2.5-.4.914-.016 1.734.306 2.58.336.75.03 1.554-.31 2.33-.314 1.99-.01 3.924.04 5.924-.02 1.484-.046 3.594.33 4.994-.046.454-.12.446-.35.924-.344.07 0-.04.286.186.35.41.12.93.04 1.344.046 1.906.016 3.924-.234 5.774.29.796.226 1.476.67 2.354.6.24-.02.494-.01.72-.1.296-.114.19-.476.31-.54 1.416-.756 3.97-.204 5.56-.344.97-.084 1.966-.32 2.94-.326.746 0 1.534.44 2.14.376.504-.056.86-.43 1.47-.434.7-.006 1.076.3 1.694.434.71.156 1.64.094 2.35-.064.916-.204 1.88-1 2.86-.744.376.1.474.34.79.47.61.256 1.016.214 1.7.256.83.046 1.54.03 2.364-.02.906-.056 1.36.344 2.144.396.734.044.246-.16.77-.276.606-.136 1.216-.114 1.856-.12 1.22-.006 2.436.02 3.656.056 1.106.03 2.23-.33 3.326-.16.984.156 1.38.604 2.48.61 1.046.004 1.364-.294 2.22-.886l.14.84c.81-.74 1.454.06 2.416-.024.7-.06 1.08-.636 1.924-.426.37.09 1.216.896 1.73.77.614-.146.61-.906 1.216-.646.416.716.54.406 1.26.114.254.564.856 1.206.26 1.59.784.42.534 3.194.53 4.05-.004.69-.19 1.356-.166 2.05.016.366.03.77.144 1.12.13.4-.06.964.39.314.106.41-.01.73-.076 1.134-.156-.18-.306-.36-.46-.536.03 1.196-.01 2.436.11 3.6.13 1.26.19 2.37-.12 3.64-.24.976-.376 1.73-.356 2.726.02 1.06.284 1.96.364 2.98.094 1.25-.416 2.55-.246 3.766.084.61.31.89.174 1.524-.12.574-.26.676-.26 1.28.01 1.18.504 2.3.314 3.504-.16 1.016 0 1.896-.04 2.946-.046 1.19.05 2.35.056 3.546.004 1.216-.216 2.674.004 3.87.03.174.18.44.18.594.004.19-.1.436-.1.57 0 1.19-.06 2.436-.09 3.634-.03 1.116-.87 2.62-.584 3.674.08.29.33.47.416.696.19.494.166.954.166 1.494.02 2.14.056 4.57.174 6.564z"/>
-							</g>
-						</svg>
-					{/if}
-					<div class="card-label-text">{resolveCardLabel(data.cardLabel)}</div>
-				</div>
-			{/if}
-		{:else}
-			<div class="card-type-area">
-				{#if data.cardLabel}
-					<div class="card-label-text">{resolveCardLabel(data.cardLabel)}</div>
+		{#if data.cardLabel}
+			<div class="banderole">
+				<div class="banderole-bg" style="mask-image: {maskUrl}; -webkit-mask-image: {maskUrl}; mask-size: 100% 100%; -webkit-mask-size: 100% 100%; mask-repeat: no-repeat; -webkit-mask-repeat: no-repeat;"></div>
+				{#if printerFriendly}
+					<svg class="banderole-outline" viewBox="-0.17 -0.23 1055.53 872.02" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+						<g transform="matrix(9.24671 0 0 13.6712 -.002 0)">
+							<path vector-effect="non-scaling-stroke" fill="none" stroke="black" stroke-width="1.5" fill-rule="nonzero" d="M113.72 61.34c-.27.424-1.22.216-1.496.51-.07.076-.216 1.73-.59.69-.266.73-3.614.576-4.44.74.96.776-.63.296-1.02.16.204-.094.416-.196.62-.29-.614-.476-1.126-.18-1.82-.104-.9.094-1.76-.104-2.62-.03-.806.076-1.386.314-2.19.27-1.046-.06-2.24-.21-3.23-.524-1.484-.466-2.906-.594-4.484-.55-.834.024-1.406.44-2.186.59-1.06.21-2.34.076-3.406-.05-.844-.1-1.626-.344-2.47-.216-.746.116-1.04.51-1.924.19-.25-.09-.61-.46-.82-.5-.334-.064-1.156.174-1.504.234-.86.146-1.614.384-2.5.4-.916.016-1.734-.304-2.58-.336-.75-.03-1.556.31-2.33.314-1.99.01-3.924-.04-5.924.02-1.484.046-3.594-.33-4.994.046-.454.12-.446.35-.924.344-.07 0 .04-.284-.186-.35-.41-.12-.93-.04-1.344-.046-1.906-.016-3.924.234-5.774-.29-.796-.226-1.476-.67-2.354-.6-.24.02-.494.01-.72.1-.296.116-.19.476-.31.54-1.414.756-3.97.204-5.56.344-.97.086-1.966.32-2.94.326-.744 0-1.534-.44-2.14-.376-.506.054-.86.43-1.47.436-.7.006-1.076-.3-1.696-.436-.71-.156-1.64-.094-2.35.064-.914.204-1.88 1-2.86.744-.376-.1-.476-.34-.79-.47-.61-.256-1.016-.216-1.7-.256-.83-.046-1.54-.03-2.364.02-.906.054-1.36-.344-2.144-.396-.734-.046-.246.16-.77.274-.606.134-1.214.116-1.856.12-1.22.006-2.434-.02-3.656-.054-1.106-.03-2.23.33-3.324.16-.984-.156-1.38-.604-2.48-.61-1.044-.006-1.366.296-2.22.884-.044-.28-.096-.56-.14-.84-.81.74-1.456-.06-2.416.024-.7.06-1.08.634-1.924.424-.37-.09-1.214-.896-1.73-.77-.614.146-.61.906-1.216.646-.416-.716-.54-.406-1.26-.116-.256-.564-.854-1.204-.26-1.59-.786-.42-.536-3.196-.53-4.05.006-.69.19-1.354.166-2.05-.016-.366-.03-.77-.146-1.12-.13-.4.06-.966-.39-.314-.104-.41.01-.73.074-1.134.154.18.304.36.46.534-.03-1.196.01-2.436-.11-3.6-.13-1.25-.19-2.39.12-3.64.46-1.854.386-3.314-.01-5.14-.276-1.26.256-2.554.256-3.796 0-.594-.31-1.11-.26-1.7.056-.604.34-1.024.336-1.64-.01-1.01-.376-1.964-.33-2.99.02-.454.21-.864.244-1.29.046-.52-.214-1.12-.22-1.656-.04-2.376-.066-4.766-.026-7.144.01-.64-.256-1.226-.27-1.766 0-.1.244-.76.27-.914.114-.734 0-1.574 0-2.32 0-1.21.294-2.164.54-3.33.21-.99-.28-1.28-.53-2.064-.37-1.17.016-2.77-.11-4.01-.136-1.32.09-2.47.09-3.75a.8.8 0 0 1-.156.14c.27-.426 1.22-.214 1.496-.51.07-.074.216-1.73.59-.69.266-.73 3.616-.574 4.44-.74-.96-.776.63-.294 1.02-.16-.206.094-.416.194-.62.29.616.476 1.126.18 1.82.104.9-.094 1.76.104 2.62.03.804-.074 1.384-.316 2.19-.27 1.044.06 2.24.21 3.23.526 1.484.464 2.906.594 4.484.55.836-.024 1.406-.44 2.184-.59 1.06-.21 2.34-.074 3.406.05.844.1 1.626.344 2.47.216.746-.114 1.04-.51 1.926-.19.25.09.61.46.82.5.336.064 1.156-.176 1.506-.236.86-.146 1.616-.386 2.5-.4.914-.016 1.734.306 2.58.336.75.03 1.554-.31 2.33-.314 1.99-.01 3.924.04 5.924-.02 1.484-.046 3.594.33 4.994-.046.454-.12.446-.35.924-.344.07 0-.04.286.186.35.41.12.93.04 1.344.046 1.906.016 3.924-.234 5.774.29.796.226 1.476.67 2.354.6.24-.02.494-.01.72-.1.296-.114.19-.476.31-.54 1.416-.756 3.97-.204 5.56-.344.97-.084 1.966-.32 2.94-.326.746 0 1.534.44 2.14.376.504-.056.86-.43 1.47-.434.7-.006 1.076.3 1.694.434.71.156 1.64.094 2.35-.064.916-.204 1.88-1 2.86-.744.376.1.474.34.79.47.61.256 1.016.214 1.7.256.83.046 1.54.03 2.364-.02.906-.056 1.36.344 2.144.396.734.044.246-.16.77-.276.606-.136 1.216-.114 1.856-.12 1.22-.006 2.436.02 3.656.056 1.106.03 2.23-.33 3.326-.16.984.156 1.38.604 2.48.61 1.046.004 1.364-.294 2.22-.886l.14.84c.81-.74 1.454.06 2.416-.024.7-.06 1.08-.636 1.924-.426.37.09 1.216.896 1.73.77.614-.146.61-.906 1.216-.646.416.716.54.406 1.26.114.254.564.856 1.206.26 1.59.784.42.534 3.194.53 4.05-.004.69-.19 1.356-.166 2.05.016.366.03.77.144 1.12.13.4-.06.964.39.314.106.41-.01.73-.076 1.134-.156-.18-.306-.36-.46-.536.03 1.196-.01 2.436.11 3.6.13 1.26.19 2.37-.12 3.64-.24.976-.376 1.73-.356 2.726.02 1.06.284 1.96.364 2.98.094 1.25-.416 2.55-.246 3.766.084.61.31.89.174 1.524-.12.574-.26.676-.26 1.28.01 1.18.504 2.3.314 3.504-.16 1.016 0 1.896-.04 2.946-.046 1.19.05 2.35.056 3.546.004 1.216-.216 2.674.004 3.87.03.174.18.44.18.594.004.19-.1.436-.1.57 0 1.19-.06 2.436-.09 3.634-.03 1.116-.87 2.62-.584 3.674.08.29.33.47.416.696.19.494.166.954.166 1.494.02 2.14.056 4.57.174 6.564z"/>
+						</g>
+					</svg>
 				{/if}
+				<div class="card-label-text">{resolveCardLabel(data.cardLabel)}</div>
 			</div>
-		{/if}
-
-		{#if printerFriendly && !isBanderole}
-			<svg class="torn-edge-overlay" viewBox="-0.17 -0.23 1055.53 872.02" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-				<g transform="matrix(9.24671 0 0 13.6712 -.002 0)">
-					<path vector-effect="non-scaling-stroke" fill="none" stroke="black" stroke-width="1.5" fill-rule="nonzero" d="M113.72 61.34c-.27.424-1.22.216-1.496.51-.07.076-.216 1.73-.59.69-.266.73-3.614.576-4.44.74.96.776-.63.296-1.02.16.204-.094.416-.196.62-.29-.614-.476-1.126-.18-1.82-.104-.9.094-1.76-.104-2.62-.03-.806.076-1.386.314-2.19.27-1.046-.06-2.24-.21-3.23-.524-1.484-.466-2.906-.594-4.484-.55-.834.024-1.406.44-2.186.59-1.06.21-2.34.076-3.406-.05-.844-.1-1.626-.344-2.47-.216-.746.116-1.04.51-1.924.19-.25-.09-.61-.46-.82-.5-.334-.064-1.156.174-1.504.234-.86.146-1.614.384-2.5.4-.916.016-1.734-.304-2.58-.336-.75-.03-1.556.31-2.33.314-1.99.01-3.924-.04-5.924.02-1.484.046-3.594-.33-4.994.046-.454.12-.446.35-.924.344-.07 0 .04-.284-.186-.35-.41-.12-.93-.04-1.344-.046-1.906-.016-3.924.234-5.774-.29-.796-.226-1.476-.67-2.354-.6-.24.02-.494.01-.72.1-.296.116-.19.476-.31.54-1.414.756-3.97.204-5.56.344-.97.086-1.966.32-2.94.326-.744 0-1.534-.44-2.14-.376-.506.054-.86.43-1.47.436-.7.006-1.076-.3-1.696-.436-.71-.156-1.64-.094-2.35.064-.914.204-1.88 1-2.86.744-.376-.1-.476-.34-.79-.47-.61-.256-1.016-.216-1.7-.256-.83-.046-1.54-.03-2.364.02-.906.054-1.36-.344-2.144-.396-.734-.046-.246.16-.77.274-.606.134-1.214.116-1.856.12-1.22.006-2.434-.02-3.656-.054-1.106-.03-2.23.33-3.324.16-.984-.156-1.38-.604-2.48-.61-1.044-.006-1.366.296-2.22.884-.044-.28-.096-.56-.14-.84-.81.74-1.456-.06-2.416.024-.7.06-1.08.634-1.924.424-.37-.09-1.214-.896-1.73-.77-.614.146-.61.906-1.216.646-.416-.716-.54-.406-1.26-.116-.256-.564-.854-1.204-.26-1.59-.786-.42-.536-3.196-.53-4.05.006-.69.19-1.354.166-2.05-.016-.366-.03-.77-.146-1.12-.13-.4.06-.966-.39-.314-.104-.41.01-.73.074-1.134.154.18.304.36.46.534-.03-1.196.01-2.436-.11-3.6-.13-1.25-.19-2.39.12-3.64.46-1.854.386-3.314-.01-5.14-.276-1.26.256-2.554.256-3.796 0-.594-.31-1.11-.26-1.7.056-.604.34-1.024.336-1.64-.01-1.01-.376-1.964-.33-2.99.02-.454.21-.864.244-1.29.046-.52-.214-1.12-.22-1.656-.04-2.376-.066-4.766-.026-7.144.01-.64-.256-1.226-.27-1.766 0-.1.244-.76.27-.914.114-.734 0-1.574 0-2.32 0-1.21.294-2.164.54-3.33.21-.99-.28-1.28-.53-2.064-.37-1.17.016-2.77-.11-4.01-.136-1.32.09-2.47.09-3.75a.8.8 0 0 1-.156.14c.27-.426 1.22-.214 1.496-.51.07-.074.216-1.73.59-.69.266-.73 3.616-.574 4.44-.74-.96-.776.63-.294 1.02-.16-.206.094-.416.194-.62.29.616.476 1.126.18 1.82.104.9-.094 1.76.104 2.62.03.804-.074 1.384-.316 2.19-.27 1.044.06 2.24.21 3.23.526 1.484.464 2.906.594 4.484.55.836-.024 1.406-.44 2.184-.59 1.06-.21 2.34-.074 3.406.05.844.1 1.626.344 2.47.216.746-.114 1.04-.51 1.926-.19.25.09.61.46.82.5.336.064 1.156-.176 1.506-.236.86-.146 1.616-.386 2.5-.4.914-.016 1.734.306 2.58.336.75.03 1.554-.31 2.33-.314 1.99-.01 3.924.04 5.924-.02 1.484-.046 3.594.33 4.994-.046.454-.12.446-.35.924-.344.07 0-.04.286.186.35.41.12.93.04 1.344.046 1.906.016 3.924-.234 5.774.29.796.226 1.476.67 2.354.6.24-.02.494-.01.72-.1.296-.114.19-.476.31-.54 1.416-.756 3.97-.204 5.56-.344.97-.084 1.966-.32 2.94-.326.746 0 1.534.44 2.14.376.504-.056.86-.43 1.47-.434.7-.006 1.076.3 1.694.434.71.156 1.64.094 2.35-.064.916-.204 1.88-1 2.86-.744.376.1.474.34.79.47.61.256 1.016.214 1.7.256.83.046 1.54.03 2.364-.02.906-.056 1.36.344 2.144.396.734.044.246-.16.77-.276.606-.136 1.216-.114 1.856-.12 1.22-.006 2.436.02 3.656.056 1.106.03 2.23-.33 3.326-.16.984.156 1.38.604 2.48.61 1.046.004 1.364-.294 2.22-.886l.14.84c.81-.74 1.454.06 2.416-.024.7-.06 1.08-.636 1.924-.426.37.09 1.216.896 1.73.77.614-.146.61-.906 1.216-.646.416.716.54.406 1.26.114.254.564.856 1.206.26 1.59.784.42.534 3.194.53 4.05-.004.69-.19 1.356-.166 2.05.016.366.03.77.144 1.12.13.4-.06.964.39.314.106.41-.01.73-.076 1.134-.156-.18-.306-.36-.46-.536.03 1.196-.01 2.436.11 3.6.13 1.26.19 2.37-.12 3.64-.24.976-.376 1.73-.356 2.726.02 1.06.284 1.96.364 2.98.094 1.25-.416 2.55-.246 3.766.084.61.31.89.174 1.524-.12.574-.26.676-.26 1.28.01 1.18.504 2.3.314 3.504-.16 1.016 0 1.896-.04 2.946-.046 1.19.05 2.35.056 3.546.004 1.216-.216 2.674.004 3.87.03.174.18.44.18.594.004.19-.1.436-.1.57 0 1.19-.06 2.436-.09 3.634-.03 1.116-.87 2.62-.584 3.674.08.29.33.47.416.696.19.494.166.954.166 1.494.02 2.14.056 4.57.174 6.564z"/>
-				</g>
-			</svg>
 		{/if}
 	</div>
 	{#if data.showCaption && data.imageCaption}
@@ -77,24 +51,30 @@
 
 	<!-- PARCHMENT -->
 	<div class="parchment" class:small-body={data.smallBodyText}>
-		<h1 class="card-name">{#each (data.name || t('card.card-name-placeholder')).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</h1>
+		{#if data.name}
+			<h1 class="card-name">{#each data.name.split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</h1>
+		{/if}
 		{#if data.showFlavorText && data.flavorText}
 			<p class="flavor-text">{data.flavorText}</p>
 		{/if}
-		{#if data.showPointsTable}
-			<div class="points-table">
-				<div class="points-header">
-					<div class="points-col-label">{t('card.points-col-wounds')}</div>
-					<div class="points-col-value">{t('card.points-col-cost')}</div>
+		{#if data.cardLabel === 'weapon' && data.weapons.length}
+			<div class="weapon-box">
+				<div class="weapon-header">
+					<div class="weapon-col weapon-col-name"><span class="header-text">{data.weapons.length > 1 ? t('card.col-weapon-plural') : t('card.col-weapon')}</span></div>
+					<div class="weapon-col"><span class="header-text">{#each t('card.col-range').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="weapon-col"><span class="header-text">{t('card.col-attacks')}</span></div>
+					<div class="weapon-col"><span class="header-text">{t('card.col-damage')}</span></div>
+					<div class="weapon-col"><span class="header-text">{#each t('card.col-gold-coins').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				</div>
-				<div class="points-row">
-					<div class="points-label">{t('card.points-regular')} (≤ 22)</div>
-					<div class="points-value" class:is-empty={!data.regularPointsValue}>{data.regularPointsValue || '—'}</div>
-				</div>
-				<div class="points-row">
-					<div class="points-label">{t('card.points-elite')} (≥ 23)</div>
-					<div class="points-value" class:is-empty={!data.elitePointsValue}>{data.elitePointsValue || '—'}</div>
-				</div>
+				{#each data.weapons as weapon}
+					<div class="weapon-values">
+						<div class="weapon-val weapon-val-name">{weapon.name || '—'}</div>
+						<div class="weapon-val">{formatRange(weapon.range)}</div>
+						<div class="weapon-val">{weapon.attacks || '—'}</div>
+						<div class="weapon-val">{weapon.damage || '—'}</div>
+						<div class="weapon-val">{weapon.goldCoins || '—'}</div>
+					</div>
+				{/each}
 			</div>
 		{/if}
 		{#if data.showPrerequisite && data.prerequisiteText}
@@ -133,85 +113,9 @@
 	/* ── IMAGE SECTION ─────────────────────────── */
 
 	.image-section {
-		flex: 0 0 280px;
+		flex: 0 0 140px;
 		margin: 5px 5px 0;
 		position: relative;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.image-inner {
-		position: absolute;
-		inset: 0;
-		background: #16754A;
-		mask-size: 100% 100%;
-		mask-repeat: no-repeat;
-		-webkit-mask-size: 100% 100%;
-		-webkit-mask-repeat: no-repeat;
-		border: 0;
-		outline: none;
-	}
-
-	.activation-row {
-		position: absolute;
-		top: 52px;
-		left: 0;
-		right: 0;
-		display: flex;
-		justify-content: center;
-		gap: 12px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.activation-badge-border {
-		width: 78px;
-		height: 78px;
-		background: #FAF6F3;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		border: 0;
-		outline: none;
-	}
-
-	.activation-badge {
-		width: 76px;
-		height: 76px;
-		background: #16754A;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		border-radius: 50%;
-		border: 0;
-		outline: none;
-	}
-
-	.card-type-area {
-		position: absolute;
-		bottom: 60px;
-		left: 0;
-		right: 0;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: 6px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.activation-text {
-		font-family: 'Grenze Gotisch', serif;
-		font-size: 24px;
-		font-weight: 400;
-		color: #FAF6F3;
-
-		text-align: center;
-		line-height: 1.2;
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -336,101 +240,100 @@
 		background: transparent;
 	}
 
-	/* ── POINTS TABLE ───────────────────────────── */
+	/* ── WEAPON TABLE ───────────────────────────── */
 
-	.points-table {
-		display: flex;
-		flex-direction: column;
+	.weapon-box {
 		width: 100%;
 		flex-shrink: 0;
+		border-radius: 7.5px;
+		border: 1px solid #16754A;
+	}
+
+	.weapon-header {
+		display: flex;
+		height: 55px;
+		background: #16754A;
+		border-radius: 6.5px 6.5px 0 0;
 		border: 0;
 		outline: none;
+	}
+
+	.weapon-values {
+		display: flex;
+		min-height: 55px;
 		background: rgba(255, 255, 255, 0.25);
-		box-shadow: inset 0 1px 0 0 #000, inset 0 -1px 0 0 #000;
+		border: 0;
+		outline: none;
 	}
 
-	.points-header {
+	.weapon-values:nth-child(odd) {
+		background: rgba(22, 117, 74, 0.12);
+	}
+
+	.weapon-values:last-child {
+		border-radius: 0 0 6.5px 6.5px;
+	}
+
+	.weapon-col {
+		flex: 0 0 83px;
+		width: 83px;
 		display: flex;
 		align-items: center;
-		height: 28px;
-		background: transparent;
+		justify-content: center;
+		line-height: 1.15;
 		border: 0;
 		outline: none;
+		background: transparent;
 	}
 
-	.points-col-label {
-		flex: 1;
-		font-family: 'Alegreya', serif;
-		font-size: 17px;
+	.weapon-col-name {
+		flex: 0 0 166px;
+		width: 166px;
+	}
+
+	.header-text {
+		color: #FAF6F3;
+		font-family: 'Grenze Gotisch', serif;
+		font-weight: 400;
+		font-size: 18px;
+		text-align: center;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.weapon-val {
+		flex: 0 0 83px;
+		width: 83px;
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 28px;
 		font-weight: 400;
 		color: #000;
 		text-align: center;
-		padding: 0 8px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.points-col-value {
-		flex: 1;
-		font-family: 'Alegreya', serif;
-		font-size: 17px;
-		font-weight: 400;
-		color: #000;
-		text-align: center;
-		padding: 0 8px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.points-row {
 		display: flex;
 		align-items: center;
-		height: 28px;
-		box-shadow: inset 0 1px 0 0 rgba(0, 0, 0, 0.4);
+		justify-content: center;
+		white-space: nowrap;
+		padding: 0 6px;
 		border: 0;
 		outline: none;
 		background: transparent;
 	}
 
-	.points-table > *:nth-child(even) {
-		background: rgba(22, 117, 74, 0.06);
+	.weapon-val-name {
+		flex: 0 0 166px;
+		width: 166px;
+		font-size: 22px;
+		white-space: normal;
 	}
 
-	.points-label {
-		flex: 1;
-		font-family: 'Alegreya', serif;
-		font-size: 17px;
-		font-weight: 400;
-		color: #000;
-		text-align: center;
-		padding: 0 8px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.points-value {
-		flex: 1;
-		font-family: 'Alegreya', serif;
-		font-size: 17px;
-		font-weight: 400;
-		color: #000;
-		text-align: center;
-		padding: 0 8px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	/* ── BANDEROLE VARIANT ──────────────────────── */
+	/* ── BANDEROLE ──────────────────────────────── */
 
 	.banderole {
 		position: absolute;
 		left: -15px;
 		right: -15px;
-		bottom: 56px;
+		top: 76px;
 		padding: 4px 50px;
 		display: flex;
 		align-items: center;
@@ -442,7 +345,7 @@
 
 	.banderole-bg {
 		position: absolute;
-		inset: -35px 0;
+		inset: -50px 0;
 		background: #16754A;
 		z-index: 0;
 		border: 0;
@@ -456,49 +359,18 @@
 
 	.banderole-outline {
 		position: absolute;
-		top: -35px;
+		top: -50px;
 		left: 0;
 		width: 100%;
-		height: calc(100% + 70px);
+		height: calc(100% + 100px);
 		pointer-events: none;
 		z-index: 2;
-	}
-
-	.is-banderole .activation-badge-border {
-		background: #16754A;
-	}
-
-	.is-banderole .activation-badge {
-		background: #FAF6F3;
-	}
-
-	.is-banderole .activation-text {
-		color: #000;
 	}
 
 	/* ── PRINTER-FRIENDLY ───────────────────────── */
 
 	.is-printer-friendly {
 		background: #fff;
-	}
-
-	.is-printer-friendly .image-inner {
-		background: #fff;
-		mask: none !important;
-		-webkit-mask: none !important;
-		border: 0;
-	}
-
-	.is-printer-friendly .activation-badge-border {
-		background: #000;
-	}
-
-	.is-printer-friendly .activation-badge {
-		background: #fff;
-	}
-
-	.is-printer-friendly .activation-text {
-		color: #000;
 	}
 
 	.is-printer-friendly .card-label-text {
@@ -515,36 +387,28 @@
 		border-color: #000;
 	}
 
-	.is-printer-friendly .points-table,
-	.is-printer-friendly .points-table > *:nth-child(even) {
+	.is-printer-friendly .weapon-box {
+		border-color: #000;
+	}
+
+	.is-printer-friendly .weapon-header {
 		background: transparent;
 	}
 
-	.is-printer-friendly .points-header {
+	.is-printer-friendly .weapon-values,
+	.is-printer-friendly .weapon-values:nth-child(odd) {
 		background: transparent;
+	}
+
+	.is-printer-friendly .header-text {
+		color: #000;
 	}
 
 	.is-printer-friendly .image-section {
 		overflow: hidden;
 	}
 
-	.is-printer-friendly.is-banderole .banderole-bg {
+	.is-printer-friendly .banderole-bg {
 		background: transparent;
-	}
-
-	.is-printer-friendly.is-banderole .activation-badge-border {
-		background: #000;
-	}
-
-	.is-printer-friendly.is-banderole .activation-badge {
-		background: #fff;
-	}
-
-	.torn-edge-overlay {
-		position: absolute;
-		inset: 0;
-		width: 100%;
-		height: 100%;
-		pointer-events: none;
 	}
 </style>

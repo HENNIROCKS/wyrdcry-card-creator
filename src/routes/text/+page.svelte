@@ -42,20 +42,15 @@
 	let data = $state<TextCardData>({
 		name: '',
 		cardLabel: 'ability',
-		activationType: null,
-		showActivation: true,
 		showFlavorText: true,
 		showPrerequisite: false,
-		showPointsTable: false,
 		showCaption: false,
 		imageCaption: '',
 		smallBodyText: false,
-		layoutVariant: 'standard',
 		flavorText: '',
+		weapons: [{ name: 'Dagger', range: '1', attacks: '3', damage: '1/3', goldCoins: '0' }],
 		prerequisiteText: '',
 		bodyText: '',
-		regularPointsValue: '15',
-		elitePointsValue: '20',
 	});
 
 	function makeSlug() {
@@ -130,7 +125,9 @@
 		const reader = new FileReader();
 		reader.onload = (ev) => {
 			try {
-				data = JSON.parse(ev.target?.result as string);
+				const loaded = JSON.parse(ev.target?.result as string);
+				if (!Array.isArray(loaded.weapons)) loaded.weapons = [];
+				data = loaded;
 				formKey++;
 			} catch { /* ignore malformed JSON */ }
 		};
