@@ -6,6 +6,9 @@
 	import { base } from '$app/paths';
 	import type { CardBackData } from '$lib/types';
 	import { t } from '$lib/i18n/index.svelte';
+	import logoSvgRaw from '$lib/wyrdcry-logo.svg?raw';
+
+	const logoMaskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(logoSvgRaw)}")`;
 
 	let cardEl: HTMLElement;
 	let exporting = $state(false);
@@ -48,7 +51,6 @@
 	});
 
 	const resolvedColor = $derived(
-		printerFriendly ? '#000' :
 		data.textColor === 'black' ? '#000' :
 		data.textColor === 'green' ? '#16754A' :
 		'#fff'
@@ -391,11 +393,11 @@
 				<div bind:this={cardEl} style="display:inline-block; line-height:0; border:0; outline:none; background:transparent;">
 					<div class="card" class:printer-friendly={printerFriendly} class:has-bg-image={!!data.backgroundImage} style="--card-text-color: {resolvedColor};">
 
-						{#if data.backgroundImage && !printerFriendly}
+						{#if data.backgroundImage}
 							<img
 								src={data.backgroundImage}
 								alt=""
-								style="position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; object-position:{data.imageOffsetX}% {data.imageOffsetY}%; transform:scale({data.imageZoom}); transform-origin:{data.imageOffsetX}% {data.imageOffsetY}%; border:0; outline:none; background:transparent;"
+								style="position:absolute; inset:0; width:100%; height:100%; display:block; object-fit:cover; object-position:{data.imageOffsetX}% {data.imageOffsetY}%; transform:scale({data.imageZoom}); transform-origin:{data.imageOffsetX}% {data.imageOffsetY}%; border:0; outline:none; background:transparent; filter: {printerFriendly ? 'grayscale(1)' : 'none'};"
 							/>
 						{/if}
 						<div class="name-overlay">
@@ -411,7 +413,7 @@
 							{/if}
 						</div>
 						{#if data.showLogo}
-							<div class="card-logo" style="background-color: {resolvedColor}; width: {data.logoSize}px;"></div>
+							<div class="card-logo" style="background-color: {resolvedColor}; width: {data.logoSize}px; mask-image: {logoMaskUrl}; -webkit-mask-image: {logoMaskUrl};"></div>
 						{/if}
 					</div>
 				</div>
@@ -561,8 +563,6 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 		aspect-ratio: 254.59 / 217.55;
-		-webkit-mask-image: url('/wyrdcry-logo.svg');
-		mask-image: url('/wyrdcry-logo.svg');
 		-webkit-mask-repeat: no-repeat;
 		mask-repeat: no-repeat;
 		-webkit-mask-position: center;

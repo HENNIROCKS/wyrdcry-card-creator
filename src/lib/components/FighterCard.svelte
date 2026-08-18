@@ -488,6 +488,9 @@
 
 	.talents-text :global(.caps) {
 		text-transform: uppercase;
+		border: 0;
+		outline: none;
+		background: transparent;
 	}
 
 	.talents-placeholder {

@@ -81,7 +81,7 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 - Full-card background: `static/background.jpg` texture by default; replaced entirely when a custom background image is uploaded (no double-layering)
 - Centred overlay: optional name (Grenze Gotisch, large) + optional mirrored name (rotated 180°) for playing-card symmetry
 - `showFlippedName` flag on `CardBackData` controls the mirrored duplicate
-- `textColor` (`'white' | 'black' | 'red'`) drives a `--card-text-color` CSS variable for the name; printer-friendly export always forces black
+- `textColor` (`'white' | 'black' | 'green'`) drives a `--card-text-color` CSS variable for the name; printer-friendly export keeps the chosen text color (only the background image is desaturated to grayscale)
 - Custom background image: pan/zoom via sliders on desktop, touch drag + pinch-to-zoom on mobile (`adjustMode` toggle)
 
 ### Fonts
