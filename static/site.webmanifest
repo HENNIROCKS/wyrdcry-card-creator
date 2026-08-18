@@ -1,6 +1,6 @@
 {
-  "name": "WCC26",
-  "short_name": "WCC26",
+  "name": "Wyrdcry Card Creator",
+  "short_name": "Wyrdcry",
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
