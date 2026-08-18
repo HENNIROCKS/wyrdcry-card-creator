@@ -48,6 +48,7 @@
 		>
 			{t('ui.credit-link')}
 		</a>
+		{t('ui.credit-suffix')}
 	</p>
 	<div class="flex flex-wrap justify-center items-center gap-x-3 gap-y-2">
 		<LangSwitch />
