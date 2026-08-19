@@ -8,6 +8,7 @@
     ]
   },
   "ui": {
+    "beta-badge": "Beta",
     "tagline-name": "Wyrdcry",
     "tagline-rest": "is an \"unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim.\"",
     "disclaimer": "This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.",

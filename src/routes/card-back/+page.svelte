@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Card Back — Wyrdcry Card Creator</title>
+	<title>Card Back — Wyrdcry Card Creator (Beta)</title>
 </svelte:head>
 
 <script lang="ts">

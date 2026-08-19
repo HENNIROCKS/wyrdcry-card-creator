@@ -1,4 +1,4 @@
-# Wyrdcry Card Creator
+# Wyrdcry Card Creator (Beta)
 
 A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.
 

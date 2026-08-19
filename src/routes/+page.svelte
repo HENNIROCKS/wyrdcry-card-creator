@@ -1,5 +1,5 @@
 <svelte:head>
-	<title>Wyrdcry Card Creator</title>
+	<title>Wyrdcry Card Creator (Beta)</title>
 </svelte:head>
 
 <script lang="ts">
@@ -35,7 +35,10 @@
 </style>
 
 <main class="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center gap-6 py-10">
-	<h1 class="text-4xl font-bold tracking-wide text-center px-6">Wyrdcry Card Creator</h1>
+	<h1 class="text-4xl font-bold tracking-wide text-center px-6">
+		Wyrdcry Card Creator
+		<span class="align-middle text-xs font-semibold uppercase tracking-wider text-zinc-500 border border-zinc-600 rounded px-2 py-0.5 ml-1">{t('ui.beta-badge')}</span>
+	</h1>
 	<div class="flex flex-col items-stretch gap-3 w-full max-w-xs px-6 my-4">
 		<a href="{base}/fighter" class="px-8 py-4 bg-[#125E3C] hover:bg-[#16754A] rounded text-white font-semibold text-lg text-center transition">
 			{t('ui.fighter-card')}
