@@ -68,11 +68,9 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 
 **Text card** (portrait, same ratio):
 
-- Top ~28%: dark header (accent colour) — activation badge (DOUBLE/TRIPLE/QUAD, shown as a circular badge) + card label (preset slugs: ability, reaction, heroic-trait, battle-trait, lesser-artefact, greater-artefact, divine-blessing — or custom text)
-- `layoutVariant?: 'standard' | 'banderole'` — banderole mode replaces the standard label with a full-width torn-edge ribbon (`<div class="banderole">`) that overhangs the card edges; the activation badge inverts to accent-on-cream; printer-friendly renders a stroke outline SVG instead of the filled shape
-- Torn paper edge divider
-- Bottom ~72%: parchment area — card name, then (each independently toggled): flavor text (italic), points cost increases table (2-col, Regular/Elite rows), prerequisite text (framed box), body text
-- Show/hide flags on `TextCardData`: `showActivation`, `showFlavorText`, `showPrerequisite`, `showPointsTable`, `showCaption` — collapsing both the card element and its form field
+- Top: banderole only (no standard/non-banderole layout, no activation badge) — a full-width torn-edge ribbon (`<div class="banderole">`) overhanging the card edges, top-anchored in the image section; shows the card label (preset slugs: trait, ability, reaction, weapon, equipment — or custom text; pluralizes to "Weapons" when the weapon type has more than one row); printer-friendly renders a stroke outline SVG instead of the filled shape
+- Parchment area — card name (rendered only if non-empty, no placeholder fallback), then: flavor text (italic, toggled), weapon stat table (Weapon/Range/Attacks/Damage/Gold Coins columns, any number of rows via `weapons: TextCardWeapon[]`, shown only when `cardLabel === 'weapon'`), prerequisite text (framed box, toggled — unavailable when `cardLabel === 'weapon'`, the two are mutually exclusive), body text
+- Show/hide flags on `TextCardData`: `showFlavorText`, `showPrerequisite`, `showCaption` — collapsing both the card element and its form field
 - `smallBodyText: boolean` — when true, reduces body text 20→16 px, flavor text 18→15 px, prerequisite text 18→14 px via `.small-body` class on `.parchment`
 - Body/prerequisite text markup toolbar has B / I / A↓ buttons (bold, italic, font-size toggle); markup is `**bold**` / `*italic*` only, parsed by `parseMarkup()` in `TextCard.svelte`
 
@@ -86,7 +84,7 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 
 ### Fonts
 
-- **Grenze Gotisch** (`static/fonts/GrenzeGotisch-Regular.ttf`, family `'Grenze Gotisch'`, weight 400, SIL OFL) — card names, stats values, activation badge, all block-style text
+- **Grenze Gotisch** (`static/fonts/GrenzeGotisch-Regular.ttf`, family `'Grenze Gotisch'`, weight 400, SIL OFL) — card names, stats values, all block-style text
 - **Alegreya** (`static/fonts/Alegreya-Regular.ttf` + `Alegreya-Italic.ttf`, family `'Alegreya'`, SIL OFL) — damage table, text card body/flavor text
 
 ### Background / textures
