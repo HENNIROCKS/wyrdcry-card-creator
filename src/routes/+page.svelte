@@ -18,6 +18,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: 6px;
+		background: var(--ui-surface);
 		border: 1px solid var(--ui-border);
 		border-radius: 20px;
 		padding: 6px 14px 6px 10px;
@@ -32,12 +33,20 @@
 		color: var(--ui-text);
 		border-color: var(--ui-text-subtle);
 	}
+
+	.landing-bg {
+		background-size: cover;
+		background-position: center;
+	}
 </style>
 
-<main class="min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center gap-6 py-10">
+<main
+	class="landing-bg min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center gap-6 py-10"
+	style="background-image: linear-gradient(var(--landing-overlay), var(--landing-overlay)), url('{base}/landing-bg.jpg');"
+>
 	<h1 class="text-4xl font-bold tracking-wide text-center px-6">
 		Wyrdcry Card Creator
-		<span class="align-middle text-xs font-semibold uppercase tracking-wider text-zinc-400 border border-zinc-600 rounded px-2 py-0.5 ml-1">{t('ui.beta-badge')}</span>
+		<span class="align-middle text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-800 border border-zinc-600 rounded px-2 py-0.5 ml-1">{t('ui.beta-badge')}</span>
 	</h1>
 	<div class="flex flex-col items-stretch gap-3 w-full max-w-xs px-6 my-4">
 		<a href="{base}/fighter" class="px-8 py-4 bg-[#125E3C] hover:bg-[#16754A] rounded text-white font-semibold text-lg text-center transition">
