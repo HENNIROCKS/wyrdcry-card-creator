@@ -17,6 +17,16 @@
 | `ui` | Editor interface — buttons, labels, placeholders, tabs, export strings. |
 | `card` | Text rendered **on the card itself** — card type labels (Ability, Reaction…), column headers, name placeholders. |
 
+## Placeholders
+
+Some values carry `{name}` placeholders that the app fills in at runtime. Keep every placeholder from the English source in your translation, spelled exactly the same — a missing one renders as an empty string, and a misspelled one renders as literal text:
+
+```json
+"card-size-info": "{mm} mm · exportiert {px} px"
+```
+
+Their position in the sentence can move freely; only the spelling has to match.
+
 ## Line breaks in card text
 
 Values in the `card` and `weapons` namespaces are rendered directly on the card. Use `|` to insert a line break when a translated string is too long to fit in a column header or weapon name cell:

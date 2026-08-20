@@ -5,7 +5,9 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import type { CardBackData } from '$lib/types';
+	import { cardSize, EXPORT_SCALE } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
+	import CardSizeSelect from '$lib/components/CardSizeSelect.svelte';
 	import logoSvgRaw from '$lib/wyrdcry-logo.svg?raw';
 
 	const logoMaskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(logoSvgRaw)}")`;
@@ -34,8 +36,8 @@
 	});
 	const cardScale = $derived(
 		isMobile
-			? Math.min(1, (viewportWidth - 32) / 574)
-			: Math.min(1, (viewportHeight - 64) / 915)
+			? Math.min(1, (viewportWidth - 32) / cardSize.portrait.w)
+			: Math.min(1, (viewportHeight - 64) / cardSize.portrait.h)
 	);
 
 	let data = $state<CardBackData>({
@@ -100,8 +102,8 @@
 		if (touchState.mode === 'drag' && e.touches.length === 1) {
 			const dx = (e.touches[0].clientX - touchState.startX) / cardScale;
 			const dy = (e.touches[0].clientY - touchState.startY) / cardScale;
-			data.imageOffsetX = Math.max(0, Math.min(100, touchState.startOffsetX - dx * (50 / 574)));
-			data.imageOffsetY = Math.max(0, Math.min(100, touchState.startOffsetY - dy * (50 / 915)));
+			data.imageOffsetX = Math.max(0, Math.min(100, touchState.startOffsetX - dx * (50 / cardSize.portrait.w)));
+			data.imageOffsetY = Math.max(0, Math.min(100, touchState.startOffsetY - dy * (50 / cardSize.portrait.h)));
 		} else if (touchState.mode === 'pinch' && e.touches.length === 2) {
 			const newDist = getTouchDist(e.touches);
 			data.imageZoom = Math.max(1, Math.min(3, touchState.startZoom * (newDist / touchState.startDist)));
@@ -142,7 +144,7 @@
 			let dataUrl: string;
 			if (isRealMobile) {
 				const { domToPng } = await import('modern-screenshot');
-				dataUrl = await domToPng(cardEl, { width: 574, height: 915, scale: 2 });
+				dataUrl = await domToPng(cardEl, { width: cardSize.portrait.w, height: cardSize.portrait.h, scale: EXPORT_SCALE });
 				if (navigator.share && navigator.canShare) {
 					const blob = await (await fetch(dataUrl)).blob();
 					const file = new File([blob], `${makeSlug()}${suffix}.png`, { type: 'image/png' });
@@ -152,7 +154,7 @@
 				}
 			} else {
 				const domtoimage = (await import('dom-to-image-more')).default;
-				dataUrl = await domtoimage.toPng(cardEl, { scale: 2 });
+				dataUrl = await domtoimage.toPng(cardEl, { scale: EXPORT_SCALE });
 				const a = document.createElement('a');
 				a.href = dataUrl;
 				a.download = `${makeSlug()}${suffix}.png`;
@@ -231,6 +233,8 @@
 						>
 							{t('ui.export-printer-friendly')}
 						</button>
+						<hr class="border-zinc-700 my-1">
+						<CardSizeSelect />
 					</div>
 				{/if}
 			</div>
@@ -369,6 +373,8 @@
 						>
 							{t('ui.export-printer-friendly')}
 						</button>
+						<hr class="border-zinc-700 my-1">
+						<CardSizeSelect />
 					</div>
 				{/if}
 			</div>
@@ -389,10 +395,10 @@
 		</div>
 
 		<!-- Card wrapper -->
-		<div style="width: {574 * cardScale}px; height: {915 * cardScale}px; position: relative; flex-shrink: 0;">
+		<div style="width: {cardSize.portrait.w * cardScale}px; height: {cardSize.portrait.h * cardScale}px; position: relative; flex-shrink: 0;">
 			<div style="transform: scale({cardScale}); transform-origin: top left; position: absolute; top: 0; left: 0; display: inline-block; line-height: 0;">
 				<div bind:this={cardEl} style="display:inline-block; line-height:0; border:0; outline:none; background:transparent;">
-					<div class="card" class:printer-friendly={printerFriendly} class:has-bg-image={!!data.backgroundImage} style="--card-text-color: {resolvedColor};">
+					<div class="card" class:printer-friendly={printerFriendly} class:has-bg-image={!!data.backgroundImage} style="--card-w: {cardSize.portrait.w}px; --card-h: {cardSize.portrait.h}px; --card-text-color: {resolvedColor};">
 
 						{#if data.backgroundImage}
 							<img
@@ -503,9 +509,10 @@
 
 	/* ── Card back visual ───────────────────────── */
 
+	/* Dimensions come from the card-size store (bridge/poker) via inline vars. */
 	.card {
-		width: 574px;
-		height: 915px;
+		width: var(--card-w);
+		height: var(--card-h);
 		position: relative;
 		overflow: hidden;
 		background-color: #16754A;

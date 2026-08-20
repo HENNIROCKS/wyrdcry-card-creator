@@ -5,7 +5,9 @@
 <script lang="ts">
 	import { base } from '$app/paths';
 	import type { TextCardData } from '$lib/types';
+	import { cardSize, EXPORT_SCALE } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
+	import CardSizeSelect from '$lib/components/CardSizeSelect.svelte';
 	import TextCard from '$lib/components/TextCard.svelte';
 	import TextForm from '$lib/components/TextForm.svelte';
 
@@ -35,8 +37,8 @@
 	});
 	const cardScale = $derived(
 		isMobile
-			? Math.min(1, (viewportWidth - 32) / 574)
-			: Math.min(1, (viewportHeight - 64) / 915)
+			? Math.min(1, (viewportWidth - 32) / cardSize.portrait.w)
+			: Math.min(1, (viewportHeight - 64) / cardSize.portrait.h)
 	);
 
 	let data = $state<TextCardData>({
@@ -68,7 +70,7 @@
 			let dataUrl: string;
 			if (isRealMobile) {
 				const { domToPng } = await import('modern-screenshot');
-				dataUrl = await domToPng(cardEl, { width: 574, height: 915, scale: 2 });
+				dataUrl = await domToPng(cardEl, { width: cardSize.portrait.w, height: cardSize.portrait.h, scale: EXPORT_SCALE });
 				if (navigator.share && navigator.canShare) {
 					const blob = await (await fetch(dataUrl)).blob();
 					const file = new File([blob], `${makeSlug()}${suffix}.png`, { type: 'image/png' });
@@ -78,7 +80,7 @@
 				}
 			} else {
 				const domtoimage = (await import('dom-to-image-more')).default;
-				dataUrl = await domtoimage.toPng(cardEl, { scale: 2 });
+				dataUrl = await domtoimage.toPng(cardEl, { scale: EXPORT_SCALE });
 				const a = document.createElement('a');
 				a.href = dataUrl;
 				a.download = `${makeSlug()}${suffix}.png`;
@@ -193,6 +195,8 @@
 						<hr class="border-zinc-700 my-1">
 						<button onclick={saveLayout} class="w-full text-left px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700">{t('ui.save-json')}</button>
 						<button onclick={loadLayout} class="w-full text-left px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700 rounded-md">{t('ui.load-json')}</button>
+						<hr class="border-zinc-700 my-1">
+						<CardSizeSelect />
 					</div>
 				{/if}
 			</div>
@@ -241,13 +245,15 @@
 						<hr class="border-zinc-700 my-1">
 						<button onclick={saveLayout} class="w-full text-left px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700">{t('ui.save-json')}</button>
 						<button onclick={loadLayout} class="w-full text-left px-4 py-2 text-sm text-zinc-200 hover:bg-zinc-700 rounded-md">{t('ui.load-json')}</button>
+						<hr class="border-zinc-700 my-1">
+						<CardSizeSelect />
 					</div>
 				{/if}
 			</div>
 		</div>
 
-		<!-- Explicit-dimension wrapper so flex sees the visual size, not the 915px layout box -->
-		<div style="width: {574 * cardScale}px; height: {915 * cardScale}px; position: relative; flex-shrink: 0;">
+		<!-- Explicit-dimension wrapper so flex sees the visual size, not the unscaled layout box -->
+		<div style="width: {cardSize.portrait.w * cardScale}px; height: {cardSize.portrait.h * cardScale}px; position: relative; flex-shrink: 0;">
 			<div style="transform: scale({cardScale}); transform-origin: top left; position: absolute; top: 0; left: 0; display: inline-block; line-height: 0;">
 				<div bind:this={cardEl} style="display:inline-block; line-height:0; border:0; outline:none; background:transparent;">
 					<TextCard {data} {printerFriendly} />

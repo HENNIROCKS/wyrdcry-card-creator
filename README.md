@@ -14,6 +14,8 @@ Browser-based tool for creating custom Warcry cards. No backend, no login, every
 
 **Card back editor** — create a matching card back with optional name text, a custom background image (pan and pinch-to-zoom on mobile), and configurable text colour. A "mirrored name" option repeats the name upside-down for a symmetrical playing-card style. Export as a print-ready PNG; printer-friendly mode forces black on white.
 
+**Card size** — every editor exports at standard playing-card proportions, chosen from the export dropdown: **Bridge** (57 × 89 mm) or **Poker** (63 × 88 mm). An info line shows the physical size and the exact pixel dimensions the export will produce. The choice is shared across all three editors and remembered between visits, so a deck comes out at one consistent size.
+
 All three editors support **light and dark theme**, work on **desktop and mobile** (tab-based layout on small screens), and can be **installed as a PWA** from the browser.
 
 ## Developing

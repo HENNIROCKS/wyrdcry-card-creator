@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { FighterCardData } from '$lib/types';
+	import { cardSize } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
 	import maskSvgRaw from '$lib/image-mask.svg?raw';
 	import runemarkShapeRaw from '$lib/runemark-shape.svg?raw';
@@ -61,7 +62,7 @@
 
 </script>
 
-<div class="card" class:is-printer-friendly={printerFriendly}>
+<div class="card" class:is-printer-friendly={printerFriendly} style="--card-w: {cardSize.portrait.w}px; --card-h: {cardSize.portrait.h}px">
 	<!-- IMAGE SECTION -->
 	<div class="image-section">
 		<div class="image-inner" style="mask-image: {maskUrl}; -webkit-mask-image: {maskUrl};">
@@ -154,9 +155,10 @@
 		background: transparent;
 	}
 
+	/* Dimensions come from the card-size store (bridge/poker) via inline vars. */
 	.card {
-		width: 574px;
-		height: 915px;
+		width: var(--card-w);
+		height: var(--card-h);
 		position: relative;
 		overflow: hidden;
 		display: flex;
@@ -406,8 +408,7 @@
 	}
 
 	.stat-col {
-		flex: 0 0 83px;
-		width: 83px;
+		flex: 1 1 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -433,8 +434,7 @@
 	}
 
 	.stat-val {
-		flex: 0 0 83px;
-		width: 83px;
+		flex: 1 1 0;
 		font-family: 'Grenze Gotisch', serif;
 		font-size: 34px;
 		font-weight: 400;

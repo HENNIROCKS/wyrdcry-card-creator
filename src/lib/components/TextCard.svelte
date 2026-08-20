@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { TextCardData } from '$lib/types';
+	import { cardSize } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
 	import maskSvgRaw from '$lib/image-mask.svg?raw';
 
@@ -27,7 +28,7 @@
 
 </script>
 
-<div class="card" class:is-printer-friendly={printerFriendly}>
+<div class="card" class:is-printer-friendly={printerFriendly} style="--card-w: {cardSize.portrait.w}px; --card-h: {cardSize.portrait.h}px">
 
 	<!-- IMAGE SECTION -->
 	<div class="image-section">
@@ -98,9 +99,10 @@
 		box-sizing: border-box;
 	}
 
+	/* Dimensions come from the card-size store (bridge/poker) via inline vars. */
 	.card {
-		width: 574px;
-		height: 915px;
+		width: var(--card-w);
+		height: var(--card-h);
 		position: relative;
 		overflow: hidden;
 		display: flex;
@@ -275,8 +277,7 @@
 	}
 
 	.weapon-col {
-		flex: 0 0 83px;
-		width: 83px;
+		flex: 1 1 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -287,8 +288,7 @@
 	}
 
 	.weapon-col-name {
-		flex: 0 0 166px;
-		width: 166px;
+		flex: 2 2 0;
 	}
 
 	.header-text {
@@ -303,8 +303,7 @@
 	}
 
 	.weapon-val {
-		flex: 0 0 83px;
-		width: 83px;
+		flex: 1 1 0;
 		font-family: 'Grenze Gotisch', serif;
 		font-size: 28px;
 		font-weight: 400;
@@ -321,8 +320,7 @@
 	}
 
 	.weapon-val-name {
-		flex: 0 0 166px;
-		width: 166px;
+		flex: 2 2 0;
 		font-size: 22px;
 		white-space: normal;
 	}
