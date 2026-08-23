@@ -3,9 +3,7 @@
     "language": "English",
     "code": "en",
     "dir": "ltr",
-    "contributors": [
-      "HENNIROCKS"
-    ]
+    "contributors": ["HENNIROCKS"]
   },
   "ui": {
     "beta-badge": "Beta",
@@ -108,7 +106,7 @@
     "form-hint-caption": "renders like caption"
   },
   "card": {
-    "label-talent": "Talent",
+    "label-talent": "Talents",
     "label-equipment": "Equipment",
     "upload-model-image": "Upload model image",
     "talents-placeholder": "Enter talents",
