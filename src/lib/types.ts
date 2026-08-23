@@ -45,9 +45,9 @@ export interface TextCardData {
 	name: string;
 	cardLabel: string;          // preset slug or custom string — see presetLabels in TextForm.svelte
 	showFlavorText: boolean;
-	showPrerequisite: boolean;  // forced off when cardLabel === 'weapon' — see TextForm.svelte
-	flavorText: string;         // italic block; render order: flavor → weapon table (cardLabel 'weapon' only) → prerequisite → body
-	weapons: TextCardWeapon[];  // weapon table rows, shown only when cardLabel === 'weapon'
+	showPrerequisite: boolean;  // forced off when cardLabel === 'equipment' — see TextForm.svelte
+	flavorText: string;         // italic block; render order: flavor → weapon table → prerequisite → body
+	weapons: TextCardWeapon[];  // weapon table rows, max 3, shown only when cardLabel === 'equipment'
 	prerequisiteText: string;   // framed box
 	bodyText: string;
 	showCaption: boolean;

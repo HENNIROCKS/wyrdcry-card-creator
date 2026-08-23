@@ -6,13 +6,19 @@
 	let bodyTextEl: HTMLTextAreaElement;
 	let prerequisiteTextEl: HTMLTextAreaElement;
 
-	const presetLabels = ['trait', 'ability', 'reaction', 'weapon', 'equipment'];
+	const presetLabels = ['talent', 'equipment'];
+
+	// Equipment cards carry the weapon table, capped at three rows.
+	const MAX_WEAPONS = 3;
+
 	let selectValue = $state(presetLabels.includes(data.cardLabel) ? data.cardLabel : '__custom__');
 	let customText = $state(presetLabels.includes(data.cardLabel) ? '' : data.cardLabel);
 
+	const hasWeaponTable = $derived(data.cardLabel === 'equipment');
+
 	$effect(() => {
 		data.cardLabel = selectValue === '__custom__' ? customText : selectValue;
-		if (data.cardLabel === 'weapon') data.showPrerequisite = false;
+		if (hasWeaponTable) data.showPrerequisite = false;
 	});
 
 	function wrapSelection(el: HTMLTextAreaElement, marker: string, field: 'bodyText' | 'prerequisiteText') {
@@ -27,6 +33,7 @@
 	}
 
 	function addWeapon() {
+		if (data.weapons.length >= MAX_WEAPONS) return;
 		data.weapons = [...data.weapons, { name: '', range: '', attacks: '', damage: '', goldCoins: '' }];
 	}
 
@@ -40,14 +47,14 @@
 	<!-- Card Name + Type -->
 	<section>
 		<label class="field-label" for="card-label">{t('ui.form-type')} <span class="normal-case font-normal text-zinc-500">({t('ui.form-select')})</span> {#if selectValue === '__custom__'}<span class="normal-case font-normal text-zinc-500">{customText.length}/30</span>{/if}</label>
-		<select id="card-label" class="field-input" bind:value={selectValue}>
-			<option value="trait">{t('card.label-trait')}</option>
-			<option value="ability">{t('card.label-ability')}</option>
-			<option value="reaction">{t('card.label-reaction')}</option>
-			<option value="weapon">{t('card.label-weapon')}</option>
+		<select id="card-label" class="field-input" aria-describedby={selectValue === 'talent' ? 'card-label-hint' : undefined} bind:value={selectValue}>
+			<option value="talent">{t('card.label-talent')}</option>
 			<option value="equipment">{t('card.label-equipment')}</option>
 			<option value="__custom__">{t('ui.form-custom')}</option>
 		</select>
+		{#if selectValue === 'talent'}
+			<p id="card-label-hint" class="field-hint">{t('ui.form-talent-hint')}</p>
+		{/if}
 		{#if selectValue === '__custom__'}
 			<input
 				class="field-input mt-2"
@@ -79,7 +86,7 @@
 				<input type="checkbox" bind:checked={data.showFlavorText} class="h-4 w-4 rounded accent-[#16754A]" />
 				<span class="text-zinc-200">{t('ui.form-show-flavor-text')}</span>
 			</label>
-			{#if data.cardLabel !== 'weapon'}
+			{#if !hasWeaponTable}
 				<label class="flex cursor-pointer items-center gap-3">
 					<input type="checkbox" bind:checked={data.showPrerequisite} class="h-4 w-4 rounded accent-[#16754A]" />
 					<span class="text-zinc-200">{t('ui.form-show-prerequisite')}</span>
@@ -105,7 +112,7 @@
 		</section>
 	{/if}
 
-	{#if data.cardLabel === 'weapon'}
+	{#if hasWeaponTable}
 		<section>
 			<p class="field-label mb-2">{t('ui.form-weapon-name')}</p>
 			<div class="weapon-grid">
@@ -130,7 +137,18 @@
 					>×</button>
 				{/each}
 			</div>
-			<button type="button" class="weapon-add" onclick={addWeapon}>+ {t('ui.form-add-weapon')}</button>
+			<div class="mt-2 flex items-center gap-2.5">
+				<button
+					type="button"
+					class="weapon-add"
+					aria-disabled={data.weapons.length >= MAX_WEAPONS}
+					aria-describedby={data.weapons.length >= MAX_WEAPONS ? 'weapon-limit' : undefined}
+					onclick={addWeapon}
+				>+ {t('ui.form-add-weapon')}</button>
+				{#if data.weapons.length >= MAX_WEAPONS}
+					<span id="weapon-limit" class="weapon-limit">{t('ui.form-weapon-limit')}</span>
+				{/if}
+			</div>
 		</section>
 	{/if}
 
@@ -181,6 +199,16 @@
 		margin-bottom: 0.375rem;
 	}
 
+	.field-hint,
+	.weapon-limit {
+		font-size: 0.7rem;
+		color: var(--ui-field-label);
+	}
+
+	.field-hint {
+		margin-top: 0.375rem;
+	}
+
 	.sublabel {
 		display: block;
 		font-size: 0.65rem;
@@ -217,7 +245,6 @@
 	}
 
 	.weapon-add {
-		margin-top: 8px;
 		font-size: 0.8rem;
 		font-weight: 700;
 		padding: 5px 12px;
@@ -228,8 +255,13 @@
 		cursor: pointer;
 	}
 
-	.weapon-add:hover {
+	.weapon-add:hover:not([aria-disabled='true']) {
 		border-color: #16754A;
+	}
+
+	.weapon-add[aria-disabled='true'] {
+		opacity: 0.35;
+		cursor: not-allowed;
 	}
 
 	@media (max-width: 1023px) {

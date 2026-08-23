@@ -15,7 +15,7 @@
 |---|---|
 | `meta` | File metadata — language name, code, direction. Not displayed directly. |
 | `ui` | Editor interface — buttons, labels, placeholders, tabs, export strings. |
-| `card` | Text rendered **on the card itself** — card type labels (Ability, Reaction…), column headers, name placeholders. |
+| `card` | Text rendered **on the card itself** — card type labels (Talent, Equipment…), column headers, name placeholders. |
 
 ## Placeholders
 

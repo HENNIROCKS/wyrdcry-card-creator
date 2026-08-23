@@ -8,10 +8,9 @@
 
 	let { data, printerFriendly = false }: { data: TextCardData; printerFriendly?: boolean } = $props();
 
-	const presetSlugs = new Set(['trait', 'ability', 'reaction', 'weapon', 'equipment']);
+	const presetSlugs = new Set(['talent', 'equipment']);
 
 	function resolveCardLabel(label: string): string {
-		if (label === 'weapon' && data.weapons.length > 1) return t('card.label-weapon-plural');
 		return presetSlugs.has(label) ? t('card.label-' + label) : label;
 	}
 
@@ -58,7 +57,7 @@
 		{#if data.showFlavorText && data.flavorText}
 			<p class="flavor-text">{data.flavorText}</p>
 		{/if}
-		{#if data.cardLabel === 'weapon' && data.weapons.length}
+		{#if data.cardLabel === 'equipment' && data.weapons.length}
 			<div class="weapon-box">
 				<div class="weapon-header">
 					<div class="weapon-col weapon-col-name"><span class="header-text">{data.weapons.length > 1 ? t('card.col-weapon-plural') : t('card.col-weapon')}</span></div>

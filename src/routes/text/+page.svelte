@@ -43,14 +43,14 @@
 
 	let data = $state<TextCardData>({
 		name: '',
-		cardLabel: 'ability',
+		cardLabel: 'talent',
 		showFlavorText: true,
 		showPrerequisite: false,
 		showCaption: false,
 		imageCaption: '',
 		smallBodyText: false,
 		flavorText: '',
-		weapons: [{ name: 'Dagger', range: '1', attacks: '3', damage: '1/3', goldCoins: '0' }],
+		weapons: [{ name: '', range: '', attacks: '', damage: '', goldCoins: '' }],
 		prerequisiteText: '',
 		bodyText: '',
 	});
