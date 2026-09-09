@@ -288,6 +288,9 @@
 
 	.weapon-col-name {
 		flex: 2 2 0;
+		justify-content: flex-start;
+		text-align: left;
+		padding-left: 16px;
 	}
 
 	.header-text {
@@ -322,6 +325,9 @@
 		flex: 2 2 0;
 		font-size: 22px;
 		white-space: normal;
+		justify-content: flex-start;
+		text-align: left;
+		padding-left: 16px;
 	}
 
 	/* ── BANDEROLE ──────────────────────────────── */

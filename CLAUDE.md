@@ -65,8 +65,10 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 
 **Fighter card** (portrait, `cardSize.portrait` — 588×915 at bridge):
 
-- Top ~55%: model image area, clipped by an SVG mask for the torn paper edge divider
-- Bottom ~45%: parchment area — fighter name, characteristics table, weapons table
+- Top band (175px), inset 38px left and right so it shares the parchment column's flush line: a row of two — a 175×175px model image on the left, masked with `runemark-shape.svg` (the gold coins badge's shape) and, in the space beside it, the centred fighter name plus subtitle. The torn-edge SVG mask is text-card-only
+- Below: parchment area — characteristics table, optional weapons table, talents box, keywords as white pills (`.keyword-pill`, green outline, centred and wrapping; printer-friendly swaps the outline to black and drops the fill)
+- Weapons table (`showWeapons` on `FighterCardData`): Weapon/Range/Attacks/Damage columns (name column left-aligned, values centred), rows via `weapons: FighterWeapon[]`, capped at `MAX_WEAPONS` = 3 with the add button disabled and a hint shown at the cap — same handling as the text card, minus the gold coins column
+- `showWeapons` also puts `.is-tight` on `.parchment`: number rows 55 → 46 px, gap 20 → 14 px, padding 29/38 → 24/30 px, buying the talents box ~85 px. Text blocks keep their size; `fitTalentsBox` shrinks the talents copy no further than 13 px
 
 **Text card** (portrait, same ratio):
 

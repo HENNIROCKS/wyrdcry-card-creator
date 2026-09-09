@@ -2,10 +2,8 @@
 	import type { FighterCardData } from '$lib/types';
 	import { cardSize } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
-	import maskSvgRaw from '$lib/image-mask.svg?raw';
 	import runemarkShapeRaw from '$lib/runemark-shape.svg?raw';
 
-	const maskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(maskSvgRaw)}")`;
 	const runemarkMaskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(runemarkShapeRaw)}")`;
 
 	let { data, printerFriendly = false, exporting = false }: { data: FighterCardData; printerFriendly?: boolean; exporting?: boolean } = $props();
@@ -33,7 +31,7 @@
 			content.style.fontSize = '';
 			let size = parseFloat(getComputedStyle(content).fontSize);
 			// higher floor than fittext's 8px — body copy stays legible where a single stat digit doesn't need to
-			while (content.scrollHeight > node.clientHeight && size > 10) {
+			while (content.scrollHeight > node.clientHeight && size > 13) {
 				size -= 0.5;
 				content.style.fontSize = `${size}px`;
 			}
@@ -45,6 +43,11 @@
 	}
 
 	function formatMove(value: string) {
+		if (!value) return '—';
+		return value === '0' ? value : `${value}"`;
+	}
+
+	function formatRange(value: string) {
 		if (!value) return '—';
 		return value === '0' ? value : `${value}"`;
 	}
@@ -65,17 +68,30 @@
 <div class="card" class:is-printer-friendly={printerFriendly} style="--card-w: {cardSize.portrait.w}px; --card-h: {cardSize.portrait.h}px">
 	<!-- IMAGE SECTION -->
 	<div class="image-section">
-		<div class="image-inner" style="mask-image: {maskUrl}; -webkit-mask-image: {maskUrl};">
-			{#if data.modelImage}
-				<img class="model-img" src={data.modelImage} alt="Fighter" style="object-position: {data.imageOffsetX}% {data.imageOffsetY}%; transform: scale({data.imageZoom}); transform-origin: {data.imageOffsetX}% {data.imageOffsetY}%" />
-			{:else}
-				<div class="model-placeholder">
-					{#if !exporting && !printerFriendly}<span>{t('card.upload-model-image')}</span>{/if}
-				</div>
+		<div class="image-box">
+			<div class="image-inner" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
+				{#if data.modelImage}
+					<img class="model-img" src={data.modelImage} alt="Fighter" style="object-position: {data.imageOffsetX}% {data.imageOffsetY}%; transform: scale({data.imageZoom}); transform-origin: {data.imageOffsetX}% {data.imageOffsetY}%" />
+				{:else}
+					<div class="model-placeholder">
+						{#if !exporting && !printerFriendly}<span>{t('card.upload-model-image')}</span>{/if}
+					</div>
+				{/if}
+			</div>
+		</div>
+		<div class="image-header">
+			<h1 class="fighter-name">
+				{#if data.isNamedCharacter}<span class="chevron">«</span>{/if}
+				{#each (data.name || t('card.fighter-name-placeholder')).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}
+				{#if data.isNamedCharacter}<span class="chevron">»</span>{/if}
+			</h1>
+			{#if data.showSubtitle && data.subtitle}
+				<p class="fighter-subtitle">{data.subtitle}</p>
 			{/if}
 		</div>
 	</div>
 
+	<!-- Gold coins badge and may-hire box are off; the form fields are disabled to match.
 	{#if data.mayHireText}
 		<div class="may-hire-box">
 			<p class="talents-text">{@html parseMarkup(data.mayHireText)}</p>
@@ -90,21 +106,14 @@
 			</div>
 		</div>
 	{/if}
+	-->
 
 	<!-- PARCHMENT SECTION -->
-	<div class="parchment">
-		<h1 class="fighter-name">
-			{#if data.isNamedCharacter}<span class="chevron">«</span>{/if}
-			{#each (data.name || t('card.fighter-name-placeholder')).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}
-			{#if data.isNamedCharacter}<span class="chevron">»</span>{/if}
-		</h1>
-		{#if data.showSubtitle && data.subtitle}
-			<p class="fighter-subtitle">{data.subtitle}</p>
-		{/if}
-
+	<div class="parchment" class:is-tight={data.showWeapons}>
 		<!-- Characteristics box -->
 		<div class="stats-box">
 			<div class="stats-header">
+				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-base-size').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-move').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-fight').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-shoot').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
@@ -113,6 +122,7 @@
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-bravery').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 			</div>
 			<div class="stats-values">
+				<div class="stat-val" class:stat-val-narrow={data.baseSize.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
 				<div class="stat-val" class:stat-val-empty={!data.move} use:fittext={data.move}>{formatMove(data.move)}</div>
 				<div class="stat-val" class:stat-val-empty={!data.fight} use:fittext={data.fight}>{data.fight || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.shoot} use:fittext={data.shoot}>{data.shoot || '—'}</div>
@@ -121,6 +131,26 @@
 				<div class="stat-val" class:stat-val-empty={!data.bravery} use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
 			</div>
 		</div>
+
+		{#if data.showWeapons && data.weapons.length}
+			<!-- Weapons box -->
+			<div class="weapon-box">
+				<div class="weapon-header">
+					<div class="weapon-col weapon-col-name"><span class="header-text">{data.weapons.length > 1 ? t('card.col-weapon-plural') : t('card.col-weapon')}</span></div>
+					<div class="weapon-col"><span class="header-text">{#each t('card.col-range').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="weapon-col"><span class="header-text">{t('card.col-attacks')}</span></div>
+					<div class="weapon-col"><span class="header-text">{t('card.col-damage')}</span></div>
+				</div>
+				{#each data.weapons as weapon}
+					<div class="weapon-values">
+						<div class="weapon-val weapon-val-name">{weapon.name || '—'}</div>
+						<div class="weapon-val">{formatRange(weapon.range)}</div>
+						<div class="weapon-val">{weapon.attacks || '—'}</div>
+						<div class="weapon-val">{weapon.damage || '—'}</div>
+					</div>
+				{/each}
+			</div>
+		{/if}
 
 		<!-- Talents box -->
 		<div class="talents-box" use:fitTalentsBox={data.talentsText}>
@@ -132,8 +162,10 @@
 		</div>
 
 		{#if data.keywords.length}
-			<div class="keywords-box">
-				<p class="talents-text keywords-text">{data.keywords.join(', ')}</p>
+			<div class="keywords-row">
+				{#each data.keywords as keyword}
+					<span class="keyword-pill">{keyword}</span>
+				{/each}
 			</div>
 		{/if}
 	</div>
@@ -171,14 +203,37 @@
 	/* ── IMAGE SECTION ─────────────────────────── */
 
 	.image-section {
-		flex: 0 0 248.7px; /* 32.9mm */
-		margin: 5px 5px 0;
+		flex: 0 0 175px;
+		margin: 5px 38px 0; /* left edge shares the parchment column's flush line */
+		display: flex;
+		gap: 12px;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.image-box {
+		flex: 0 0 175px;
 		position: relative;
 		border: 0;
 		outline: none;
 		background: transparent;
 	}
 
+	.image-header {
+		flex: 1 1 auto;
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		padding: 0 8px;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	/* Same shape as the gold coins badge, cut from the runemark SVG. */
 	.image-inner {
 		position: absolute;
 		inset: 0;
@@ -209,7 +264,10 @@
 		justify-content: center;
 		color: #FAF6F3;
 		font-family: system-ui, sans-serif;
-		font-size: 28px;
+		font-size: 16px;
+		line-height: 1.25;
+		text-align: center;
+		padding: 0 22px;
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -344,7 +402,8 @@
 	.fighter-name {
 		font-family: 'Grenze Gotisch', serif;
 		font-weight: 600;
-		font-size: 42px;
+		font-size: 34px;
+		width: 100%;
 		color: #000;
 		line-height: 1.1;
 		margin: 0;
@@ -362,7 +421,7 @@
 		line-height: 1.3;
 		color: #000;
 		text-align: center;
-		margin: -12px 0 0;
+		margin: 4px 0 0;
 		white-space: normal;
 		overflow-wrap: break-word;
 		border: 0;
@@ -450,8 +509,105 @@
 		background: transparent;
 	}
 
+	/* Rectangular bases carry three glyph groups — start smaller so fittext has less to claw back. */
+	.stat-val-narrow {
+		font-size: 22px;
+	}
+
 	.stat-val-empty {
 		font-size: 16px;
+	}
+
+	/* ── WEAPON TABLE ──────────────────────────── */
+
+	.weapon-box {
+		width: 100%;
+		flex-shrink: 0;
+		border-radius: 7.5px;
+		border: 1px solid #16754A;
+	}
+
+	.weapon-header {
+		display: flex;
+		height: 55px;
+		background: #16754A;
+		border-radius: 6.5px 6.5px 0 0;
+		border: 0;
+		outline: none;
+	}
+
+	.weapon-values {
+		display: flex;
+		min-height: 55px;
+		background: rgba(255, 255, 255, 0.25);
+		border: 0;
+		outline: none;
+	}
+
+	.weapon-values:nth-child(odd) {
+		background: rgba(22, 117, 74, 0.12);
+	}
+
+	.weapon-values:last-child {
+		border-radius: 0 0 6.5px 6.5px;
+	}
+
+	.weapon-col {
+		flex: 1 1 0;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		line-height: 1.15;
+		text-align: center;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.weapon-col-name {
+		flex: 2 2 0;
+		justify-content: flex-start;
+		text-align: left;
+		padding-left: 16px;
+	}
+
+	.weapon-val {
+		flex: 1 1 0;
+		font-family: 'Grenze Gotisch', serif;
+		font-size: 28px;
+		font-weight: 400;
+		color: #000;
+		text-align: center;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		white-space: nowrap;
+		padding: 0 6px;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.weapon-val-name {
+		flex: 2 2 0;
+		font-size: 22px;
+		white-space: normal;
+		justify-content: flex-start;
+		text-align: left;
+		padding-left: 16px;
+	}
+
+	.is-printer-friendly .weapon-box {
+		border-color: #000;
+	}
+
+	.is-printer-friendly .weapon-header {
+		background: transparent;
+	}
+
+	.is-printer-friendly .weapon-values,
+	.is-printer-friendly .weapon-values:nth-child(odd) {
+		background: transparent;
 	}
 
 	/* ── TALENTS BOX ───────────────────────────── */
@@ -497,20 +653,43 @@
 		font-style: italic;
 	}
 
-	.keywords-text {
-		font-size: 14px;
-		text-transform: uppercase;
+	/* ── KEYWORDS ──────────────────────────────── */
+
+	.keywords-row {
+		flex-shrink: 0;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		gap: 8px;
 	}
 
-	/* ── KEYWORDS BOX ───────────────────────────── */
-
-	.keywords-box {
-		flex-shrink: 0;
-		box-sizing: border-box;
-		border-radius: 7.5px;
+	.keyword-pill {
+		font-family: 'Alegreya', serif;
+		font-size: 14px;
+		line-height: 1;
+		text-transform: uppercase;
+		color: #000;
+		background: #FFF;
 		border: 1px solid #16754A;
-		background: rgba(255, 255, 255, 0.25);
-		padding: 10px 16px;
+		border-radius: 999px;
+		padding: 7px 14px;
+	}
+
+	/* Weapons table active: the number rows and the outer spacing give up a few
+	   pixels so the talents box keeps room. Text blocks are left alone. */
+	.parchment.is-tight {
+		padding: 24px 38px 30px;
+		gap: 14px;
+	}
+
+	.parchment.is-tight .stats-header,
+	.parchment.is-tight .stats-values,
+	.parchment.is-tight .weapon-header {
+		height: 46px;
+	}
+
+	.parchment.is-tight .weapon-values {
+		min-height: 46px;
 	}
 
 	/* ── PRINTER-FRIENDLY OVERRIDES ────────────── */
@@ -542,7 +721,7 @@
 		color: #000;
 	}
 
-	.is-printer-friendly .keywords-box {
+	.is-printer-friendly .keyword-pill {
 		border-color: #000;
 		background: transparent;
 	}

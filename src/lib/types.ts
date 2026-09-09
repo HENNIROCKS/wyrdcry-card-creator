@@ -1,3 +1,10 @@
+export interface FighterWeapon {
+	name: string;
+	range: string;
+	attacks: string;
+	damage: string;
+}
+
 export interface FighterCardData {
 	name: string;
 	subtitle: string;
@@ -8,12 +15,15 @@ export interface FighterCardData {
 	imageCaption: string;
 	goldCoinsValue: string;
 	mayHireText: string;      // markup: **bold**, *italic*
+	baseSize: string;         // e.g. "⌀ 32"
 	move: string;
 	fight: string;
 	shoot: string;
 	defense: string;
 	health: string;
 	bravery: string;
+	weapons: FighterWeapon[]; // max 3 rows, shown only when showWeapons
+	showWeapons: boolean;
 	talentsText: string;      // markup: **bold**, *italic*, ^^uppercase^^
 	keywords: string[];       // rendered comma-separated, uppercase
 	isNamedCharacter: boolean;

@@ -8,7 +8,7 @@ A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. T
 
 Browser-based tool for creating custom Warcry cards. No backend, no login, everything runs client-side.
 
-**Fighter card editor** — upload a model photo, set name and characteristics (Move, Toughness, Wounds), and build a weapon profile table. On mobile, pan and pinch-to-zoom the model image directly on the preview. Export as a print-ready PNG.
+**Fighter card editor** — upload a model photo, set name and characteristics (Base Size, Move, Fight, Shoot, Defense, Health, Bravery), and optionally build a weapon profile table (up to three weapons). On mobile, pan and pinch-to-zoom the model image directly on the preview. Export as a print-ready PNG.
 
 **Text card editor** — set card name and card type: **Talent** (covers traits, abilities and reactions), **Equipment**, or a custom label. The type is rendered as a full-width banderole: a torn-edge ribbon that spans slightly beyond the card edges. Equipment cards add a weapon profile table (Weapon / Range / Attacks / Damage / Gold Coins) with up to three rows. The Card Elements checkboxes toggle which sections appear: flavour text, prerequisite text in a framed box (not available on Equipment cards), and an optional caption at the bottom of the card. The body/flavour/prerequisite markup toolbar has bold, italic, and an **A↓ font size toggle** for denser cards. Export as a print-ready PNG.
 

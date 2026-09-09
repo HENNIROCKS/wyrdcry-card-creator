@@ -17,6 +17,18 @@
 		reader.readAsDataURL(file);
 	}
 
+	// The weapons table is capped at three rows, same as the text card.
+	const MAX_WEAPONS = 3;
+
+	function addWeapon() {
+		if (data.weapons.length >= MAX_WEAPONS) return;
+		data.weapons = [...data.weapons, { name: '', range: '', attacks: '', damage: '' }];
+	}
+
+	function removeWeapon(i: number) {
+		data.weapons = data.weapons.filter((_, idx) => idx !== i);
+	}
+
 	function wrapSelection(el: HTMLTextAreaElement, marker: string, field: 'talentsText' | 'mayHireText') {
 		const start = el.selectionStart;
 		const end = el.selectionEnd;
@@ -91,6 +103,10 @@
 				<input type="checkbox" bind:checked={data.showCaption} class="h-4 w-4 rounded accent-[#16754A]" />
 				<span class="text-zinc-200">{t('ui.form-show-caption')}</span>
 			</label>
+			<label class="flex cursor-pointer items-center gap-3">
+				<input type="checkbox" bind:checked={data.showWeapons} class="h-4 w-4 rounded accent-[#16754A]" />
+				<span class="text-zinc-200">{t('ui.form-show-weapons')}</span>
+			</label>
 		</div>
 	</section>
 
@@ -141,19 +157,20 @@
 		<div class="space-y-3">
 			<div>
 				<label class="sublabel" for="gold-coins-value">{t('ui.form-gold-coins-value')}</label>
-				<input id="gold-coins-value" type="number" class="field-input" bind:value={data.goldCoinsValue} />
+				<input id="gold-coins-value" type="number" class="field-input opacity-40 cursor-not-allowed" bind:value={data.goldCoinsValue} disabled />
 			</div>
 			<div>
 				<label class="sublabel" for="may-hire-text">{t('ui.form-may-hire')}</label>
 				<div class="markup-toolbar">
-					<button type="button" class="markup-btn caps" title={t('ui.form-uppercase')} onclick={() => wrapSelection(mayHireTextEl, '^^', 'mayHireText')}>AA</button>
+					<button type="button" class="markup-btn caps opacity-40 cursor-not-allowed" title={t('ui.form-uppercase')} onclick={() => wrapSelection(mayHireTextEl, '^^', 'mayHireText')} disabled>AA</button>
 				</div>
 				<textarea
 					id="may-hire-text"
-					class="field-input resize-none"
+					class="field-input resize-none opacity-40 cursor-not-allowed"
 					rows="4"
 					bind:value={data.mayHireText}
 					bind:this={mayHireTextEl}
+					disabled
 				></textarea>
 			</div>
 		</div>
@@ -162,7 +179,33 @@
 	<!-- Characteristics -->
 	<section>
 		<p class="field-label mb-2">{t('ui.form-characteristics')}</p>
-		<div class="grid grid-cols-3 gap-2 sm:grid-cols-6">
+		<div class="grid grid-cols-3 gap-2 sm:grid-cols-8">
+			<div class="col-span-2">
+				<label class="sublabel" for="baseSize">{t('ui.form-base-size')}</label>
+				<select id="baseSize" class="field-input text-center" style="text-align-last: center" bind:value={data.baseSize}>
+					<option>⌀ 20</option>
+					<option>⌀ 25</option>
+					<option>⌀ 28.5</option>
+					<option>⌀ 32</option>
+					<option>⌀ 40</option>
+					<option>⌀ 50</option>
+					<option>⌀ 60</option>
+					<option>⌀ 70</option>
+					<option>⌀ 80</option>
+					<option>⌀ 90</option>
+					<option>⌀ 100</option>
+					<option>⌀ 120</option>
+					<option>⌀ 130</option>
+					<option>⌀ 160</option>
+					<option>50 × 25</option>
+					<option>60 × 35</option>
+					<option>75 × 42</option>
+					<option>90 × 52</option>
+					<option>105 × 70</option>
+					<option>120 × 92</option>
+					<option>170 × 105</option>
+				</select>
+			</div>
 			<div>
 				<label class="sublabel" for="move">{t('ui.form-move')}</label>
 				<input id="move" class="field-input text-center" placeholder="—" bind:value={data.move} />
@@ -189,6 +232,44 @@
 			</div>
 		</div>
 	</section>
+
+	<!-- Weapons -->
+	{#if data.showWeapons}
+		<section>
+			<p class="field-label mb-2">{t('ui.form-weapons')}</p>
+			<div class="weapon-grid">
+				<label class="sublabel" for="weapon-name-0">{t('ui.form-weapon-name')}</label>
+				<label class="sublabel" for="weapon-range-0">{t('ui.form-weapon-range')}</label>
+				<label class="sublabel" for="weapon-attacks-0">{t('ui.form-weapon-attacks')}</label>
+				<label class="sublabel" for="weapon-damage-0">{t('ui.form-weapon-damage')}</label>
+				<span></span>
+				{#each data.weapons as weapon, i}
+					<input id="weapon-name-{i}" class="field-input text-center" type="text" maxlength="30" placeholder={t('ui.form-weapon-name')} aria-label={t('ui.form-weapon-name')} bind:value={weapon.name} />
+					<input id="weapon-range-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-range')} aria-label={t('ui.form-weapon-range')} bind:value={weapon.range} />
+					<input id="weapon-attacks-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-attacks')} aria-label={t('ui.form-weapon-attacks')} bind:value={weapon.attacks} />
+					<input id="weapon-damage-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-damage')} aria-label={t('ui.form-weapon-damage')} bind:value={weapon.damage} />
+					<button
+						type="button"
+						class="weapon-remove"
+						aria-label="{t('ui.form-remove')} {i + 1}"
+						onclick={() => removeWeapon(i)}
+					>×</button>
+				{/each}
+			</div>
+			<div class="mt-2 flex items-center gap-2.5">
+				<button
+					type="button"
+					class="weapon-add"
+					aria-disabled={data.weapons.length >= MAX_WEAPONS}
+					aria-describedby={data.weapons.length >= MAX_WEAPONS ? 'weapon-limit' : undefined}
+					onclick={addWeapon}
+				>+ {t('ui.form-add-weapon')}</button>
+				{#if data.weapons.length >= MAX_WEAPONS}
+					<span id="weapon-limit" class="weapon-limit">{t('ui.form-weapon-limit')}</span>
+				{/if}
+			</div>
+		</section>
+	{/if}
 
 	<!-- Talents -->
 	<section>
@@ -300,6 +381,65 @@
 		.markup-btn {
 			font-size: 1rem;
 			padding: 12px 20px;
+		}
+	}
+
+	.weapon-grid {
+		display: grid;
+		grid-template-columns: 2fr 1fr 1fr 1fr auto;
+		gap: 8px;
+		align-items: center;
+	}
+
+	.weapon-limit {
+		font-size: 0.7rem;
+		color: var(--ui-field-label);
+	}
+
+	.weapon-remove {
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		border: 1px solid var(--ui-border);
+		background: var(--ui-surface);
+		color: var(--ui-text);
+		font-size: 1rem;
+		line-height: 1;
+		cursor: pointer;
+	}
+
+	.weapon-remove:hover {
+		border-color: #16754A;
+	}
+
+	.weapon-add {
+		font-size: 0.8rem;
+		font-weight: 700;
+		padding: 5px 12px;
+		border-radius: 6px;
+		border: 1px solid var(--ui-border);
+		background: var(--ui-surface);
+		color: var(--ui-text);
+		cursor: pointer;
+	}
+
+	.weapon-add:hover:not([aria-disabled='true']) {
+		border-color: #16754A;
+	}
+
+	.weapon-add[aria-disabled='true'] {
+		opacity: 0.35;
+		cursor: not-allowed;
+	}
+
+	@media (max-width: 1023px) {
+		.weapon-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+
+		.weapon-grid label,
+		.weapon-grid > span:empty {
+			display: none;
 		}
 	}
 
