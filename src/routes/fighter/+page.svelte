@@ -86,7 +86,8 @@
 		}
 	}
 
-	let data = $state<FighterCardData>({
+	// Loading a layout merges onto these, so a file saved before a field existed still opens.
+	const defaultData: FighterCardData = {
 		name: 'Warrior',
 		subtitle: '',
 		modelImage: null,
@@ -110,7 +111,9 @@
 		isNamedCharacter: false,
 		showSubtitle: false,
 		showCaption: false
-	});
+	};
+
+	let data = $state<FighterCardData>(structuredClone(defaultData));
 
 	function makeSlug() {
 		const toSlug = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
@@ -185,7 +188,7 @@
 		const reader = new FileReader();
 		reader.onload = (ev) => {
 			try {
-				data = JSON.parse(ev.target?.result as string);
+				data = { ...structuredClone(defaultData), ...JSON.parse(ev.target?.result as string) };
 			} catch { /* ignore malformed JSON */ }
 		};
 		reader.readAsText(file);

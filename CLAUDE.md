@@ -53,6 +53,7 @@ PATH="$HOME/Library/Application Support/Herd/config/nvm/versions/node/v22.22.0/b
 
 - `FighterCard.svelte` / `FighterForm.svelte` — fighter card visual + form
 - `TextCard.svelte` / `TextForm.svelte` — text/ability card visual + form
+- `WeaponTable.svelte` — the weapon stat table both cards render; `showGoldCoins` adds the fifth column (text card), `tight` drops the row height 55 → 46 px (fighter card), `printerFriendly` swaps fills for outlines
 - `CardSizeSelect.svelte` — bridge/poker picker + live size info line; sits in every export dropdown
 - `LangSwitch.svelte` — language switcher
 - `ThemeToggle.svelte` — light/dark theme toggle
@@ -68,7 +69,9 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 - Top band (175px), inset 38px left and right so it shares the parchment column's flush line: a row of two — a 175×175px model image on the left, masked with `runemark-shape.svg` (the gold coins badge's shape) and, in the space beside it, the centred fighter name plus subtitle. The torn-edge SVG mask is text-card-only
 - Below: parchment area — characteristics table, optional weapons table, talents box, keywords as white pills (`.keyword-pill`, green outline, centred and wrapping; printer-friendly swaps the outline to black and drops the fill)
 - Weapons table (`showWeapons` on `FighterCardData`): Weapon/Range/Attacks/Damage columns (name column left-aligned, values centred), rows via `weapons: FighterWeapon[]`, capped at `MAX_WEAPONS` = 3 with the add button disabled and a hint shown at the cap — same handling as the text card, minus the gold coins column
-- `showWeapons` also puts `.is-tight` on `.parchment`: number rows 55 → 46 px, gap 20 → 14 px, padding 29/38 → 24/30 px, buying the talents box ~85 px. Text blocks keep their size; `fitTalentsBox` shrinks the talents copy no further than 13 px
+- A rendered weapons table also puts `.is-tight` on `.parchment`: characteristics rows 55 → 46 px, gap 20 → 14 px, padding 29/38 → 24/30 px, buying the talents box ~85 px (the weapon rows shrink through `WeaponTable`'s own `tight` prop). Text blocks keep their size; `fitTalentsBox` shrinks the talents copy no further than 13 px
+- Gold coins badge and may-hire box are parked: the markup is commented out in `FighterCard.svelte` and the form fields are disabled, styles kept in place so re-enabling is a pure uncomment. They account for the "unused CSS selector" warnings `svelte-check` reports on that file
+- `handleFileLoad` merges a loaded layout onto `defaultData`, so a JSON saved before a field existed still opens
 
 **Text card** (portrait, same ratio):
 

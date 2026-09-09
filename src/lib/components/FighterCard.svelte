@@ -2,6 +2,7 @@
 	import type { FighterCardData } from '$lib/types';
 	import { cardSize } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
+	import WeaponTable from '$lib/components/WeaponTable.svelte';
 	import runemarkShapeRaw from '$lib/runemark-shape.svg?raw';
 
 	const runemarkMaskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(runemarkShapeRaw)}")`;
@@ -43,11 +44,6 @@
 	}
 
 	function formatMove(value: string) {
-		if (!value) return '—';
-		return value === '0' ? value : `${value}"`;
-	}
-
-	function formatRange(value: string) {
 		if (!value) return '—';
 		return value === '0' ? value : `${value}"`;
 	}
@@ -109,7 +105,7 @@
 	-->
 
 	<!-- PARCHMENT SECTION -->
-	<div class="parchment" class:is-tight={data.showWeapons}>
+	<div class="parchment" class:is-tight={data.showWeapons && data.weapons.length}>
 		<!-- Characteristics box -->
 		<div class="stats-box">
 			<div class="stats-header">
@@ -122,7 +118,7 @@
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-bravery').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 			</div>
 			<div class="stats-values">
-				<div class="stat-val" class:stat-val-narrow={data.baseSize.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
+				<div class="stat-val" class:stat-val-narrow={data.baseSize?.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
 				<div class="stat-val" class:stat-val-empty={!data.move} use:fittext={data.move}>{formatMove(data.move)}</div>
 				<div class="stat-val" class:stat-val-empty={!data.fight} use:fittext={data.fight}>{data.fight || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.shoot} use:fittext={data.shoot}>{data.shoot || '—'}</div>
@@ -134,22 +130,7 @@
 
 		{#if data.showWeapons && data.weapons.length}
 			<!-- Weapons box -->
-			<div class="weapon-box">
-				<div class="weapon-header">
-					<div class="weapon-col weapon-col-name"><span class="header-text">{data.weapons.length > 1 ? t('card.col-weapon-plural') : t('card.col-weapon')}</span></div>
-					<div class="weapon-col"><span class="header-text">{#each t('card.col-range').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-					<div class="weapon-col"><span class="header-text">{t('card.col-attacks')}</span></div>
-					<div class="weapon-col"><span class="header-text">{t('card.col-damage')}</span></div>
-				</div>
-				{#each data.weapons as weapon}
-					<div class="weapon-values">
-						<div class="weapon-val weapon-val-name">{weapon.name || '—'}</div>
-						<div class="weapon-val">{formatRange(weapon.range)}</div>
-						<div class="weapon-val">{weapon.attacks || '—'}</div>
-						<div class="weapon-val">{weapon.damage || '—'}</div>
-					</div>
-				{/each}
-			</div>
+			<WeaponTable weapons={data.weapons} tight {printerFriendly} />
 		{/if}
 
 		<!-- Talents box -->
@@ -518,98 +499,6 @@
 		font-size: 16px;
 	}
 
-	/* ── WEAPON TABLE ──────────────────────────── */
-
-	.weapon-box {
-		width: 100%;
-		flex-shrink: 0;
-		border-radius: 7.5px;
-		border: 1px solid #16754A;
-	}
-
-	.weapon-header {
-		display: flex;
-		height: 55px;
-		background: #16754A;
-		border-radius: 6.5px 6.5px 0 0;
-		border: 0;
-		outline: none;
-	}
-
-	.weapon-values {
-		display: flex;
-		min-height: 55px;
-		background: rgba(255, 255, 255, 0.25);
-		border: 0;
-		outline: none;
-	}
-
-	.weapon-values:nth-child(odd) {
-		background: rgba(22, 117, 74, 0.12);
-	}
-
-	.weapon-values:last-child {
-		border-radius: 0 0 6.5px 6.5px;
-	}
-
-	.weapon-col {
-		flex: 1 1 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		line-height: 1.15;
-		text-align: center;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.weapon-col-name {
-		flex: 2 2 0;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 16px;
-	}
-
-	.weapon-val {
-		flex: 1 1 0;
-		font-family: 'Grenze Gotisch', serif;
-		font-size: 28px;
-		font-weight: 400;
-		color: #000;
-		text-align: center;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		white-space: nowrap;
-		padding: 0 6px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.weapon-val-name {
-		flex: 2 2 0;
-		font-size: 22px;
-		white-space: normal;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 16px;
-	}
-
-	.is-printer-friendly .weapon-box {
-		border-color: #000;
-	}
-
-	.is-printer-friendly .weapon-header {
-		background: transparent;
-	}
-
-	.is-printer-friendly .weapon-values,
-	.is-printer-friendly .weapon-values:nth-child(odd) {
-		background: transparent;
-	}
-
 	/* ── TALENTS BOX ───────────────────────────── */
 
 	.header-text {
@@ -683,13 +572,8 @@
 	}
 
 	.parchment.is-tight .stats-header,
-	.parchment.is-tight .stats-values,
-	.parchment.is-tight .weapon-header {
+	.parchment.is-tight .stats-values {
 		height: 46px;
-	}
-
-	.parchment.is-tight .weapon-values {
-		min-height: 46px;
 	}
 
 	/* ── PRINTER-FRIENDLY OVERRIDES ────────────── */

@@ -251,6 +251,7 @@
 					<button
 						type="button"
 						class="weapon-remove"
+						disabled={data.weapons.length <= 1}
 						aria-label="{t('ui.form-remove')} {i + 1}"
 						onclick={() => removeWeapon(i)}
 					>×</button>
@@ -408,8 +409,14 @@
 		cursor: pointer;
 	}
 
-	.weapon-remove:hover {
+	.weapon-remove:hover:not(:disabled),
+	.weapon-remove:focus-visible {
 		border-color: #16754A;
+	}
+
+	.weapon-remove:disabled {
+		opacity: 0.35;
+		cursor: not-allowed;
 	}
 
 	.weapon-add {
@@ -423,7 +430,8 @@
 		cursor: pointer;
 	}
 
-	.weapon-add:hover:not([aria-disabled='true']) {
+	.weapon-add:hover:not([aria-disabled='true']),
+	.weapon-add:focus-visible {
 		border-color: #16754A;
 	}
 
@@ -440,6 +448,12 @@
 		.weapon-grid label,
 		.weapon-grid > span:empty {
 			display: none;
+		}
+
+		/* Own row: with an odd cell count the next weapon would otherwise start mid-row. */
+		.weapon-remove {
+			grid-column: 1 / -1;
+			justify-self: end;
 		}
 	}
 

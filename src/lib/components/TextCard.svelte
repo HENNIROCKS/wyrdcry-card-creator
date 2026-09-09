@@ -2,6 +2,7 @@
 	import type { TextCardData } from '$lib/types';
 	import { cardSize } from '$lib/card-size.svelte';
 	import { t } from '$lib/i18n/index.svelte';
+	import WeaponTable from '$lib/components/WeaponTable.svelte';
 	import maskSvgRaw from '$lib/image-mask.svg?raw';
 
 	const maskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(maskSvgRaw)}")`;
@@ -18,11 +19,6 @@
 		return text
 			.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 			.replace(/\*(.+?)\*/g, '<em>$1</em>');
-	}
-
-	function formatRange(value: string): string {
-		if (!value) return '—';
-		return value === '0' ? value : `${value}"`;
 	}
 
 </script>
@@ -58,24 +54,7 @@
 			<p class="flavor-text">{data.flavorText}</p>
 		{/if}
 		{#if data.cardLabel === 'equipment' && data.weapons.length}
-			<div class="weapon-box">
-				<div class="weapon-header">
-					<div class="weapon-col weapon-col-name"><span class="header-text">{data.weapons.length > 1 ? t('card.col-weapon-plural') : t('card.col-weapon')}</span></div>
-					<div class="weapon-col"><span class="header-text">{#each t('card.col-range').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-					<div class="weapon-col"><span class="header-text">{t('card.col-attacks')}</span></div>
-					<div class="weapon-col"><span class="header-text">{t('card.col-damage')}</span></div>
-					<div class="weapon-col"><span class="header-text">{#each t('card.col-gold-coins').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				</div>
-				{#each data.weapons as weapon}
-					<div class="weapon-values">
-						<div class="weapon-val weapon-val-name">{weapon.name || '—'}</div>
-						<div class="weapon-val">{formatRange(weapon.range)}</div>
-						<div class="weapon-val">{weapon.attacks || '—'}</div>
-						<div class="weapon-val">{weapon.damage || '—'}</div>
-						<div class="weapon-val">{weapon.goldCoins || '—'}</div>
-					</div>
-				{/each}
-			</div>
+			<WeaponTable weapons={data.weapons} showGoldCoins {printerFriendly} />
 		{/if}
 		{#if data.showPrerequisite && data.prerequisiteText}
 			<div class="prerequisite-box">
@@ -241,95 +220,6 @@
 		background: transparent;
 	}
 
-	/* ── WEAPON TABLE ───────────────────────────── */
-
-	.weapon-box {
-		width: 100%;
-		flex-shrink: 0;
-		border-radius: 7.5px;
-		border: 1px solid #16754A;
-	}
-
-	.weapon-header {
-		display: flex;
-		height: 55px;
-		background: #16754A;
-		border-radius: 6.5px 6.5px 0 0;
-		border: 0;
-		outline: none;
-	}
-
-	.weapon-values {
-		display: flex;
-		min-height: 55px;
-		background: rgba(255, 255, 255, 0.25);
-		border: 0;
-		outline: none;
-	}
-
-	.weapon-values:nth-child(odd) {
-		background: rgba(22, 117, 74, 0.12);
-	}
-
-	.weapon-values:last-child {
-		border-radius: 0 0 6.5px 6.5px;
-	}
-
-	.weapon-col {
-		flex: 1 1 0;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		line-height: 1.15;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.weapon-col-name {
-		flex: 2 2 0;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 16px;
-	}
-
-	.header-text {
-		color: #FAF6F3;
-		font-family: 'Grenze Gotisch', serif;
-		font-weight: 400;
-		font-size: 18px;
-		text-align: center;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.weapon-val {
-		flex: 1 1 0;
-		font-family: 'Grenze Gotisch', serif;
-		font-size: 28px;
-		font-weight: 400;
-		color: #000;
-		text-align: center;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		white-space: nowrap;
-		padding: 0 6px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.weapon-val-name {
-		flex: 2 2 0;
-		font-size: 22px;
-		white-space: normal;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 16px;
-	}
-
 	/* ── BANDEROLE ──────────────────────────────── */
 
 	.banderole {
@@ -388,23 +278,6 @@
 
 	.is-printer-friendly .prerequisite-box {
 		border-color: #000;
-	}
-
-	.is-printer-friendly .weapon-box {
-		border-color: #000;
-	}
-
-	.is-printer-friendly .weapon-header {
-		background: transparent;
-	}
-
-	.is-printer-friendly .weapon-values,
-	.is-printer-friendly .weapon-values:nth-child(odd) {
-		background: transparent;
-	}
-
-	.is-printer-friendly .header-text {
-		color: #000;
 	}
 
 	.is-printer-friendly .image-section {

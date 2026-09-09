@@ -235,7 +235,8 @@
 		cursor: pointer;
 	}
 
-	.weapon-remove:hover:not(:disabled) {
+	.weapon-remove:hover:not(:disabled),
+	.weapon-remove:focus-visible {
 		border-color: #16754A;
 	}
 
@@ -255,7 +256,8 @@
 		cursor: pointer;
 	}
 
-	.weapon-add:hover:not([aria-disabled='true']) {
+	.weapon-add:hover:not([aria-disabled='true']),
+	.weapon-add:focus-visible {
 		border-color: #16754A;
 	}
 
