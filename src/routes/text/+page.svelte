@@ -41,7 +41,8 @@
 			: Math.min(1, (viewportHeight - 64) / cardSize.portrait.h)
 	);
 
-	let data = $state<TextCardData>({
+	// Loading a layout merges onto these, so a file saved before a field existed still opens.
+	const defaultData: TextCardData = {
 		name: '',
 		cardLabel: 'talent',
 		showFlavorText: true,
@@ -53,7 +54,9 @@
 		weapons: [{ name: '', range: '', attacks: '', damage: '', goldCoins: '' }],
 		prerequisiteText: '',
 		bodyText: '',
-	});
+	};
+
+	let data = $state<TextCardData>(structuredClone(defaultData));
 
 	function makeSlug() {
 		const toSlug = (s: string) => s.toLowerCase().replace(/\s+/g, '-');
@@ -128,8 +131,8 @@
 		reader.onload = (ev) => {
 			try {
 				const loaded = JSON.parse(ev.target?.result as string);
-				if (!Array.isArray(loaded.weapons)) loaded.weapons = [];
-				data = loaded;
+				data = { ...structuredClone(defaultData), ...loaded };
+				if (!Array.isArray(data.weapons)) data.weapons = [];
 				formKey++;
 			} catch { /* ignore malformed JSON */ }
 		};

@@ -109,22 +109,22 @@
 		<!-- Characteristics box -->
 		<div class="stats-box">
 			<div class="stats-header">
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-base-size').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-move').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-fight').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-shoot').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-defense').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-health').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-bravery').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-base-size').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 			</div>
 			<div class="stats-values">
-				<div class="stat-val" class:stat-val-narrow={data.baseSize?.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
 				<div class="stat-val" class:stat-val-empty={!data.move} use:fittext={data.move}>{formatMove(data.move)}</div>
 				<div class="stat-val" class:stat-val-empty={!data.fight} use:fittext={data.fight}>{data.fight || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.shoot} use:fittext={data.shoot}>{data.shoot || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.defense} use:fittext={data.defense}>{data.defense || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.health} use:fittext={data.health}>{data.health || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.bravery} use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
+				<div class="stat-val" class:stat-val-narrow={data.baseSize?.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
 			</div>
 		</div>
 
@@ -485,9 +485,10 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		/* Grenze Gotisch's digits sit ~4.7px below the optical centre of their line
-		   box, so the padding lifts them back into the middle of the row. */
-		padding: 0 6px 8px;
+		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
+		   their line box, while values carrying a descender (2/4) sit slightly
+		   above it. The padding lifts everything by 2px, which splits that. */
+		padding: 0 6px 4px;
 		border: 0;
 		outline: none;
 		background: transparent;

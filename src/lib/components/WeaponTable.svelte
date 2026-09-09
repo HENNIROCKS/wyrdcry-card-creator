@@ -122,16 +122,17 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		/* Grenze Gotisch's digits sit ~4.7px below the optical centre of their line
-		   box, so the padding lifts them back into the middle of the row. */
-		padding: 0 6px 8px;
+		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
+		   their line box, while values carrying a descender (2/4) sit slightly
+		   above it. The padding lifts everything by 2px, which splits that. */
+		padding: 0 6px 4px;
 	}
 
 	/* Letters carry full ascenders and descenders — they already centre, so the
 	   name column keeps the plain padding. */
 	.weapon-val-name {
 		flex: 2 2 0;
-		font-size: 28px;
+		font-size: 24px;
 		padding-bottom: 0;
 		white-space: normal;
 		justify-content: flex-start;
