@@ -196,6 +196,7 @@
 	.image-box {
 		flex: 0 0 175px;
 		position: relative;
+		top: 10px; /* nudged down, closer to the characteristics table */
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -383,7 +384,7 @@
 	.fighter-name {
 		font-family: 'Grenze Gotisch', serif;
 		font-weight: 600;
-		font-size: 34px;
+		font-size: 38px;
 		width: 100%;
 		color: #000;
 		line-height: 1.1;
@@ -398,7 +399,7 @@
 		display: block;
 		width: 100%;
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 18px;
+		font-size: 20px;
 		line-height: 1.3;
 		color: #000;
 		text-align: center;
@@ -476,7 +477,7 @@
 	.stat-val {
 		flex: 1 1 0;
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 34px;
+		font-size: 28px;
 		font-weight: 400;
 		color: #000;
 		text-align: center;
@@ -484,7 +485,9 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		padding: 0 6px;
+		/* Grenze Gotisch's digits sit ~4.7px below the optical centre of their line
+		   box, so the padding lifts them back into the middle of the row. */
+		padding: 0 6px 8px;
 		border: 0;
 		outline: none;
 		background: transparent;
