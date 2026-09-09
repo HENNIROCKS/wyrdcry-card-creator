@@ -135,6 +135,6 @@ Light/dark theme uses CSS custom properties declared on `:root` (dark) and `[dat
 ## Workflow preferences
 
 - Explain plan before making changes. Wait for confirmation.
-- Documenting a session always means checking and updating **all** of: `README.md`, `CLAUDE.md`, `src/lib/i18n/README.md`, `.github/ISSUE_TEMPLATE/*.md`, and memory files.
+- Documenting a session always means checking and updating **all** of: `README.md`, `CLAUDE.md`, `src/lib/i18n/README.md`, `.github/ISSUE_TEMPLATE/*.md`, memory files, and the vault notes in `Notizen/Projekte/Wyrdcry/Card-Creator/` (`Übersicht.md` for architecture, `Changelog.md` for the dated session entry).
 - **Never** run `git commit` or `git push` (any variant). User manages all git operations.
 - When redundant files are identified (stale build output, `.DS_Store`, empty placeholders, orphaned assets), delete them without asking.
