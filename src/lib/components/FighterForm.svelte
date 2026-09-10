@@ -103,10 +103,6 @@
 				<input type="checkbox" bind:checked={data.showCaption} class="h-4 w-4 rounded accent-[#16754A]" />
 				<span class="text-zinc-200">{t('ui.form-show-caption')}</span>
 			</label>
-			<label class="flex cursor-pointer items-center gap-3">
-				<input type="checkbox" bind:checked={data.showWeapons} class="h-4 w-4 rounded accent-[#16754A]" />
-				<span class="text-zinc-200">{t('ui.form-show-weapons')}</span>
-			</label>
 		</div>
 	</section>
 
@@ -234,43 +230,41 @@
 	</section>
 
 	<!-- Weapons -->
-	{#if data.showWeapons}
-		<section>
-			<p class="field-label mb-2">{t('ui.form-weapons')}</p>
-			<div class="weapon-grid">
-				<label class="sublabel" for="weapon-name-0">{t('ui.form-weapon-name')}</label>
-				<label class="sublabel" for="weapon-range-0">{t('ui.form-weapon-range')}</label>
-				<label class="sublabel" for="weapon-attacks-0">{t('ui.form-weapon-attacks')}</label>
-				<label class="sublabel" for="weapon-damage-0">{t('ui.form-weapon-damage')}</label>
-				<span></span>
-				{#each data.weapons as weapon, i}
-					<input id="weapon-name-{i}" class="field-input text-center" type="text" maxlength="30" placeholder={t('ui.form-weapon-name')} aria-label={t('ui.form-weapon-name')} bind:value={weapon.name} />
-					<input id="weapon-range-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-range')} aria-label={t('ui.form-weapon-range')} bind:value={weapon.range} />
-					<input id="weapon-attacks-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-attacks')} aria-label={t('ui.form-weapon-attacks')} bind:value={weapon.attacks} />
-					<input id="weapon-damage-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-damage')} aria-label={t('ui.form-weapon-damage')} bind:value={weapon.damage} />
-					<button
-						type="button"
-						class="weapon-remove"
-						disabled={data.weapons.length <= 1}
-						aria-label="{t('ui.form-remove')} {i + 1}"
-						onclick={() => removeWeapon(i)}
-					>×</button>
-				{/each}
-			</div>
-			<div class="mt-2 flex items-center gap-2.5">
+	<section>
+		<p class="field-label mb-2">{t('ui.form-weapons')}</p>
+		<div class="weapon-grid">
+			<label class="sublabel" for="weapon-name-0">{t('ui.form-weapon-name')}</label>
+			<label class="sublabel" for="weapon-range-0">{t('ui.form-weapon-range')}</label>
+			<label class="sublabel" for="weapon-attacks-0">{t('ui.form-weapon-attacks')}</label>
+			<label class="sublabel" for="weapon-damage-0">{t('ui.form-weapon-damage')}</label>
+			<span></span>
+			{#each data.weapons as weapon, i}
+				<input id="weapon-name-{i}" class="field-input text-center" type="text" maxlength="30" placeholder={t('ui.form-weapon-name')} aria-label={t('ui.form-weapon-name')} bind:value={weapon.name} />
+				<input id="weapon-range-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-range')} aria-label={t('ui.form-weapon-range')} bind:value={weapon.range} />
+				<input id="weapon-attacks-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-attacks')} aria-label={t('ui.form-weapon-attacks')} bind:value={weapon.attacks} />
+				<input id="weapon-damage-{i}" class="field-input text-center" type="text" placeholder={t('ui.form-weapon-damage')} aria-label={t('ui.form-weapon-damage')} bind:value={weapon.damage} />
 				<button
 					type="button"
-					class="weapon-add"
-					aria-disabled={data.weapons.length >= MAX_WEAPONS}
-					aria-describedby={data.weapons.length >= MAX_WEAPONS ? 'weapon-limit' : undefined}
-					onclick={addWeapon}
-				>+ {t('ui.form-add-weapon')}</button>
-				{#if data.weapons.length >= MAX_WEAPONS}
-					<span id="weapon-limit" class="weapon-limit">{t('ui.form-weapon-limit')}</span>
-				{/if}
-			</div>
-		</section>
-	{/if}
+					class="weapon-remove"
+					disabled={data.weapons.length <= 1}
+					aria-label="{t('ui.form-remove')} {i + 1}"
+					onclick={() => removeWeapon(i)}
+				>×</button>
+			{/each}
+		</div>
+		<div class="mt-2 flex items-center gap-2.5">
+			<button
+				type="button"
+				class="weapon-add"
+				aria-disabled={data.weapons.length >= MAX_WEAPONS}
+				aria-describedby={data.weapons.length >= MAX_WEAPONS ? 'weapon-limit' : undefined}
+				onclick={addWeapon}
+			>+ {t('ui.form-add-weapon')}</button>
+			{#if data.weapons.length >= MAX_WEAPONS}
+				<span id="weapon-limit" class="weapon-limit">{t('ui.form-weapon-limit')}</span>
+			{/if}
+		</div>
+	</section>
 
 	<!-- Talents -->
 	<section>

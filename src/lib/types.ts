@@ -22,8 +22,7 @@ export interface FighterCardData {
 	defense: string;
 	health: string;
 	bravery: string;
-	weapons: FighterWeapon[]; // max 3 rows, shown only when showWeapons
-	showWeapons: boolean;
+	weapons: FighterWeapon[]; // max 3 rows
 	talentsText: string;      // markup: **bold**, *italic*, ^^uppercase^^
 	keywords: string[];       // rendered as pills, uppercase
 	isNamedCharacter: boolean;

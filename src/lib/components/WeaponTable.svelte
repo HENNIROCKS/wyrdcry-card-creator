@@ -100,21 +100,21 @@
 		flex: 2 2 0;
 		justify-content: flex-start;
 		text-align: left;
-		padding-left: 16px;
+		padding-left: 12px;
 	}
 
 	.header-text {
 		color: #FAF6F3;
 		font-family: 'Grenze Gotisch', serif;
 		font-weight: 400;
-		font-size: 18px;
+		font-size: 20px;
 		text-align: center;
 	}
 
 	.weapon-val {
 		flex: 1 1 0;
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 28px;
+		font-size: 20px;
 		font-weight: 400;
 		color: #000;
 		text-align: center;
@@ -124,20 +124,19 @@
 		white-space: nowrap;
 		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
 		   their line box, while values carrying a descender (2/4) sit slightly
-		   above it. The padding lifts everything by 2px, which splits that. */
-		padding: 0 6px 4px;
+		   above it. The padding lifts everything by 1.5px, which splits that. */
+		padding: 0 4px 3px;
 	}
 
 	/* Letters carry full ascenders and descenders — they already centre, so the
 	   name column keeps the plain padding. */
 	.weapon-val-name {
 		flex: 2 2 0;
-		font-size: 24px;
 		padding-bottom: 0;
 		white-space: normal;
 		justify-content: flex-start;
 		text-align: left;
-		padding-left: 16px;
+		padding-left: 12px;
 	}
 
 	.weapon-box.is-printer-friendly {

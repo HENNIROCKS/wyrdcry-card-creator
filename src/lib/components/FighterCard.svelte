@@ -105,7 +105,7 @@
 	-->
 
 	<!-- PARCHMENT SECTION -->
-	<div class="parchment" class:is-tight={data.showWeapons && data.weapons.length}>
+	<div class="parchment" class:is-tight={data.weapons.length} class:has-caption={data.showCaption && data.imageCaption}>
 		<!-- Characteristics box -->
 		<div class="stats-box">
 			<div class="stats-header">
@@ -124,11 +124,11 @@
 				<div class="stat-val" class:stat-val-empty={!data.defense} use:fittext={data.defense}>{data.defense || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.health} use:fittext={data.health}>{data.health || '—'}</div>
 				<div class="stat-val" class:stat-val-empty={!data.bravery} use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
-				<div class="stat-val" class:stat-val-narrow={data.baseSize?.includes('×')} use:fittext={data.baseSize}>{data.baseSize}</div>
+				<div class="stat-val" use:fittext={data.baseSize}>{data.baseSize}</div>
 			</div>
 		</div>
 
-		{#if data.showWeapons && data.weapons.length}
+		{#if data.weapons.length}
 			<!-- Weapons box -->
 			<WeaponTable weapons={data.weapons} tight {printerFriendly} />
 		{/if}
@@ -185,7 +185,7 @@
 
 	.image-section {
 		flex: 0 0 175px;
-		margin: 5px 38px 0; /* left edge shares the parchment column's flush line */
+		margin: 16px 38px 0; /* left edge shares the parchment column's flush line */
 		display: flex;
 		gap: 12px;
 		border: 0;
@@ -366,7 +366,7 @@
 	.parchment {
 		flex: 1 1 auto;
 		min-height: 0;
-		padding: 29px 38px 38px;
+		padding: 29px 38px 26px;
 		display: flex;
 		flex-direction: column;
 		gap: 20px;
@@ -462,7 +462,7 @@
 		flex-direction: column;
 		line-height: 1.15;
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 18px;
+		font-size: 20px;
 		font-weight: 400;
 		font-style: normal;
 		text-align: center;
@@ -477,7 +477,7 @@
 	.stat-val {
 		flex: 1 1 0;
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 28px;
+		font-size: 20px;
 		font-weight: 400;
 		color: #000;
 		text-align: center;
@@ -487,16 +487,11 @@
 		white-space: nowrap;
 		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
 		   their line box, while values carrying a descender (2/4) sit slightly
-		   above it. The padding lifts everything by 2px, which splits that. */
-		padding: 0 6px 4px;
+		   above it. The padding lifts everything by 1.5px, which splits that. */
+		padding: 0 4px 3px;
 		border: 0;
 		outline: none;
 		background: transparent;
-	}
-
-	/* Rectangular bases carry three glyph groups — start smaller so fittext has less to claw back. */
-	.stat-val-narrow {
-		font-size: 22px;
 	}
 
 	.stat-val-empty {
@@ -509,7 +504,7 @@
 		color: #FAF6F3;
 		font-family: 'Grenze Gotisch', serif;
 		font-weight: 400;
-		font-size: 18px;
+		font-size: 20px;
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -519,7 +514,7 @@
 		font-family: 'Alegreya', serif;
 		font-size: 18px;
 		color: #000;
-		line-height: 1.5;
+		line-height: 1.3;
 		margin: 0;
 		text-align: left;
 		white-space: pre-wrap;
@@ -562,7 +557,7 @@
 		line-height: 1;
 		text-transform: uppercase;
 		color: #000;
-		background: #FFF;
+		background: rgba(255, 255, 255, 0.25);
 		border: 1px solid #16754A;
 		border-radius: 999px;
 		padding: 7px 14px;
@@ -571,13 +566,19 @@
 	/* Weapons table active: the number rows and the outer spacing give up a few
 	   pixels so the talents box keeps room. Text blocks are left alone. */
 	.parchment.is-tight {
-		padding: 24px 38px 30px;
+		padding: 24px 38px 26px;
 		gap: 14px;
 	}
 
 	.parchment.is-tight .stats-header,
 	.parchment.is-tight .stats-values {
 		height: 46px;
+	}
+
+	/* The caption sits absolutely on the card's bottom edge — the keywords give
+	   way so the two don't collide. */
+	.parchment.has-caption {
+		padding-bottom: 40px;
 	}
 
 	/* ── PRINTER-FRIENDLY OVERRIDES ────────────── */

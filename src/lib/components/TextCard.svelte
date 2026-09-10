@@ -164,7 +164,7 @@
 		font-size: 18px;
 		font-style: italic;
 		color: #3a2a1a;
-		line-height: 1.5;
+		line-height: 1.3;
 		margin: 0;
 		text-align: left;
 		border: 0;
@@ -176,7 +176,7 @@
 		font-family: 'Alegreya', serif;
 		font-size: 20px;
 		color: #000;
-		line-height: 1.55;
+		line-height: 1.3;
 		margin: 0;
 		text-align: left;
 		white-space: pre-wrap;
