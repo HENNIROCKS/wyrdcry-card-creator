@@ -95,6 +95,7 @@
 		imageOffsetY: 50,
 		imageZoom: 1,
 		imageCaption: '',
+		isHiredSword: false,
 		goldCoinsValue: '65',
 		mayHireText: '',
 		baseSize: '⌀ 32',

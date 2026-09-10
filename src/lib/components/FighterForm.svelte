@@ -96,6 +96,10 @@
 				<span class="text-zinc-200">{t('ui.form-named-fighter')}</span>
 			</label>
 			<label class="flex cursor-pointer items-center gap-3">
+				<input type="checkbox" bind:checked={data.isHiredSword} class="h-4 w-4 rounded accent-[#16754A]" />
+				<span class="text-zinc-200">{t('ui.form-is-hired-sword')}</span>
+			</label>
+			<label class="flex cursor-pointer items-center gap-3">
 				<input type="checkbox" bind:checked={data.showSubtitle} class="h-4 w-4 rounded accent-[#16754A]" />
 				<span class="text-zinc-200">{t('ui.form-show-subtitle')}</span>
 			</label>
@@ -147,35 +151,60 @@
 		{/if}
 	</section>
 
-	<!-- Gold Coins -->
-	<section>
-		<p class="field-label mb-2">{t('ui.form-gold-coins')}</p>
-		<div class="space-y-3">
-			<div>
-				<label class="sublabel" for="gold-coins-value">{t('ui.form-gold-coins-value')}</label>
-				<input id="gold-coins-value" type="number" class="field-input opacity-40 cursor-not-allowed" bind:value={data.goldCoinsValue} disabled />
-			</div>
-			<div>
-				<label class="sublabel" for="may-hire-text">{t('ui.form-may-hire')}</label>
-				<div class="markup-toolbar">
-					<button type="button" class="markup-btn caps opacity-40 cursor-not-allowed" title={t('ui.form-uppercase')} onclick={() => wrapSelection(mayHireTextEl, '^^', 'mayHireText')} disabled>AA</button>
+	<!-- Hire Fee -->
+	{#if data.isHiredSword}
+		<section>
+			<p class="field-label mb-2">{t('ui.form-hire-fee')}</p>
+			<div class="space-y-3">
+				<div>
+					<label class="sublabel" for="gold-coins-value">{t('ui.form-gold-coins-value')}</label>
+					<input id="gold-coins-value" type="text" inputmode="numeric" class="field-input" bind:value={data.goldCoinsValue} />
 				</div>
-				<textarea
-					id="may-hire-text"
-					class="field-input resize-none opacity-40 cursor-not-allowed"
-					rows="4"
-					bind:value={data.mayHireText}
-					bind:this={mayHireTextEl}
-					disabled
-				></textarea>
+				<div>
+					<label class="sublabel" for="may-hire-text">{t('ui.form-may-hire')}</label>
+					<div class="markup-toolbar">
+						<button type="button" class="markup-btn caps" title={t('ui.form-uppercase')} onclick={() => wrapSelection(mayHireTextEl, '^^', 'mayHireText')}>AA</button>
+					</div>
+					<textarea
+						id="may-hire-text"
+						class="field-input resize-none"
+						rows="4"
+						bind:value={data.mayHireText}
+						bind:this={mayHireTextEl}
+					></textarea>
+				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	{/if}
 
 	<!-- Characteristics -->
 	<section>
 		<p class="field-label mb-2">{t('ui.form-characteristics')}</p>
 		<div class="grid grid-cols-3 gap-2 sm:grid-cols-8">
+			<div>
+				<label class="sublabel" for="move">{t('ui.form-move')}</label>
+				<input id="move" class="field-input text-center" placeholder="—" bind:value={data.move} />
+			</div>
+			<div>
+				<label class="sublabel" for="fight">{t('ui.form-fight')}</label>
+				<input id="fight" class="field-input text-center" placeholder="—" bind:value={data.fight} />
+			</div>
+			<div>
+				<label class="sublabel" for="shoot">{t('ui.form-shoot')}</label>
+				<input id="shoot" class="field-input text-center" placeholder="—" bind:value={data.shoot} />
+			</div>
+			<div>
+				<label class="sublabel" for="defense">{t('ui.form-defense')}</label>
+				<input id="defense" class="field-input text-center" placeholder="—" bind:value={data.defense} />
+			</div>
+			<div>
+				<label class="sublabel" for="health">{t('ui.form-health')}</label>
+				<input id="health" class="field-input text-center" placeholder="—" bind:value={data.health} />
+			</div>
+			<div>
+				<label class="sublabel" for="bravery">{t('ui.form-bravery')}</label>
+				<input id="bravery" class="field-input text-center" placeholder="—" bind:value={data.bravery} />
+			</div>
 			<div class="col-span-2">
 				<label class="sublabel" for="baseSize">{t('ui.form-base-size')}</label>
 				<select id="baseSize" class="field-input text-center" style="text-align-last: center" bind:value={data.baseSize}>
@@ -201,30 +230,6 @@
 					<option>120 × 92</option>
 					<option>170 × 105</option>
 				</select>
-			</div>
-			<div>
-				<label class="sublabel" for="move">{t('ui.form-move')}</label>
-				<input id="move" class="field-input text-center" placeholder="—" bind:value={data.move} />
-			</div>
-			<div>
-				<label class="sublabel" for="fight">{t('ui.form-fight')}</label>
-				<input id="fight" class="field-input text-center" placeholder="—" bind:value={data.fight} />
-			</div>
-			<div>
-				<label class="sublabel" for="shoot">{t('ui.form-shoot')}</label>
-				<input id="shoot" class="field-input text-center" placeholder="—" bind:value={data.shoot} />
-			</div>
-			<div>
-				<label class="sublabel" for="defense">{t('ui.form-defense')}</label>
-				<input id="defense" class="field-input text-center" placeholder="—" bind:value={data.defense} />
-			</div>
-			<div>
-				<label class="sublabel" for="health">{t('ui.form-health')}</label>
-				<input id="health" class="field-input text-center" placeholder="—" bind:value={data.health} />
-			</div>
-			<div>
-				<label class="sublabel" for="bravery">{t('ui.form-bravery')}</label>
-				<input id="bravery" class="field-input text-center" placeholder="—" bind:value={data.bravery} />
 			</div>
 		</div>
 	</section>

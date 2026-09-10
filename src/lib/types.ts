@@ -13,8 +13,9 @@ export interface FighterCardData {
 	imageOffsetY: number; // 0–100, object-position y
 	imageZoom: number;    // 1–3, scale factor
 	imageCaption: string;
+	isHiredSword: boolean;
 	goldCoinsValue: string;
-	mayHireText: string;      // markup: **bold**, *italic*
+	mayHireText: string;      // markup: **bold**, *italic*, ^^uppercase^^
 	baseSize: string;         // e.g. "⌀ 32"
 	move: string;
 	fight: string;

@@ -9,6 +9,9 @@
 
 	let { data, printerFriendly = false, exporting = false }: { data: FighterCardData; printerFriendly?: boolean; exporting?: boolean } = $props();
 
+	const hasCaption = $derived(data.showCaption && !!data.imageCaption);
+	const hasBadge = $derived(data.isHiredSword && !!data.goldCoinsValue);
+
 	function fittext(node: HTMLElement, _value?: unknown) {
 		function fit() {
 			node.style.fontSize = '';
@@ -75,7 +78,7 @@
 				{/if}
 			</div>
 		</div>
-		<div class="image-header">
+		<div class="image-header" class:clears-badge={hasBadge}>
 			<h1 class="fighter-name">
 				{#if data.isNamedCharacter}<span class="chevron">«</span>{/if}
 				{#each (data.name || t('card.fighter-name-placeholder')).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}
@@ -84,17 +87,13 @@
 			{#if data.showSubtitle && data.subtitle}
 				<p class="fighter-subtitle">{data.subtitle}</p>
 			{/if}
+			{#if data.isHiredSword && data.mayHireText}
+				<p class="may-hire-text">{@html parseMarkup(data.mayHireText)}</p>
+			{/if}
 		</div>
 	</div>
 
-	<!-- Gold coins badge and may-hire box are off; the form fields are disabled to match.
-	{#if data.mayHireText}
-		<div class="may-hire-box">
-			<p class="talents-text">{@html parseMarkup(data.mayHireText)}</p>
-		</div>
-	{/if}
-
-	{#if data.goldCoinsValue}
+	{#if hasBadge}
 		<div class="gold-coins-badge-border" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
 			<div class="gold-coins-badge" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
 				<span class="gold-coins-text">{data.goldCoinsValue}</span>
@@ -102,10 +101,9 @@
 			</div>
 		</div>
 	{/if}
-	-->
 
 	<!-- PARCHMENT SECTION -->
-	<div class="parchment" class:is-tight={data.weapons.length} class:has-caption={data.showCaption && data.imageCaption}>
+	<div class="parchment" class:has-caption={hasCaption}>
 		<!-- Characteristics box -->
 		<div class="stats-box">
 			<div class="stats-header">
@@ -118,12 +116,12 @@
 				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-base-size').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
 			</div>
 			<div class="stats-values">
-				<div class="stat-val" class:stat-val-empty={!data.move} use:fittext={data.move}>{formatMove(data.move)}</div>
-				<div class="stat-val" class:stat-val-empty={!data.fight} use:fittext={data.fight}>{data.fight || '—'}</div>
-				<div class="stat-val" class:stat-val-empty={!data.shoot} use:fittext={data.shoot}>{data.shoot || '—'}</div>
-				<div class="stat-val" class:stat-val-empty={!data.defense} use:fittext={data.defense}>{data.defense || '—'}</div>
-				<div class="stat-val" class:stat-val-empty={!data.health} use:fittext={data.health}>{data.health || '—'}</div>
-				<div class="stat-val" class:stat-val-empty={!data.bravery} use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
+				<div class="stat-val" use:fittext={data.move}>{formatMove(data.move)}</div>
+				<div class="stat-val" use:fittext={data.fight}>{data.fight || '—'}</div>
+				<div class="stat-val" use:fittext={data.shoot}>{data.shoot || '—'}</div>
+				<div class="stat-val" use:fittext={data.defense}>{data.defense || '—'}</div>
+				<div class="stat-val" use:fittext={data.health}>{data.health || '—'}</div>
+				<div class="stat-val" use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
 				<div class="stat-val" use:fittext={data.baseSize}>{data.baseSize}</div>
 			</div>
 		</div>
@@ -151,7 +149,7 @@
 		{/if}
 	</div>
 
-	{#if data.showCaption && data.imageCaption}
+	{#if hasCaption}
 		<div class="image-caption">{data.imageCaption}</div>
 	{/if}
 </div>
@@ -274,29 +272,42 @@
 		opacity: 1;
 	}
 
-	.may-hire-box {
-		position: absolute;
-		top: 248.7px; /* same vertical center as the gold coins badge */
-		left: 78px;
-		right: 38px;
-		transform: translateY(-50%);
-		box-sizing: border-box;
-		border-radius: 7.5px;
-		border: 1px dashed #16754A;
-		background: url('/background.jpg') center center / cover no-repeat;
-		padding: 10px 16px 10px 42px; /* left offset clears the badge, which paints on top */
+	/* The badge reaches into this column; the text steps aside where it does. */
+	.clears-badge .may-hire-text {
+		padding-left: 20px;
 	}
 
-	.may-hire-box .talents-text {
+	.may-hire-text {
+		width: 100%;
+		font-family: 'Alegreya', serif;
 		font-size: 14px;
+		line-height: 1.3;
+		color: #000;
+		text-align: center;
+		margin: 6px 0 0;
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.may-hire-text :global(strong),
+	.may-hire-text :global(em),
+	.may-hire-text :global(.caps) {
+		border: 0;
+		outline: none;
+		background: transparent;
+	}
+
+	.may-hire-text :global(.caps) {
+		text-transform: uppercase;
 	}
 
 	.gold-coins-badge-border {
 		position: absolute;
-		top: 209.7px; /* image section's bottom edge (5px margin + 248.7px height − 39px half-height), nudged up 5px */
-		left: 38px;
-		width: 78px;
-		height: 78px;
+		top: 134px; /* overlaps the model image's lower right corner */
+		left: 172px;
+		width: 70px;
+		height: 70px;
 		background: #FAF6F3;
 		display: flex;
 		align-items: center;
@@ -310,8 +321,8 @@
 	}
 
 	.gold-coins-badge {
-		width: 76px;
-		height: 76px;
+		width: 68px;
+		height: 68px;
 		background: #16754A;
 		display: flex;
 		flex-direction: column;
@@ -327,7 +338,7 @@
 
 	.gold-coins-text {
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 42px;
+		font-size: 38px;
 		font-weight: 600;
 		color: #FAF6F3;
 		text-align: center;
@@ -366,10 +377,10 @@
 	.parchment {
 		flex: 1 1 auto;
 		min-height: 0;
-		padding: 29px 38px 26px;
+		padding: 24px 38px 26px;
 		display: flex;
 		flex-direction: column;
-		gap: 20px;
+		gap: 14px;
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -433,7 +444,7 @@
 	.stats-header,
 	.stats-values {
 		display: flex;
-		height: 55px;
+		height: 46px;
 		border: 0;
 		outline: none;
 	}
@@ -492,10 +503,6 @@
 		border: 0;
 		outline: none;
 		background: transparent;
-	}
-
-	.stat-val-empty {
-		font-size: 16px;
 	}
 
 	/* ── TALENTS BOX ───────────────────────────── */
@@ -563,18 +570,6 @@
 		padding: 7px 14px;
 	}
 
-	/* Weapons table active: the number rows and the outer spacing give up a few
-	   pixels so the talents box keeps room. Text blocks are left alone. */
-	.parchment.is-tight {
-		padding: 24px 38px 26px;
-		gap: 14px;
-	}
-
-	.parchment.is-tight .stats-header,
-	.parchment.is-tight .stats-values {
-		height: 46px;
-	}
-
 	/* The caption sits absolutely on the card's bottom edge — the keywords give
 	   way so the two don't collide. */
 	.parchment.has-caption {
@@ -613,11 +608,6 @@
 	.is-printer-friendly .keyword-pill {
 		border-color: #000;
 		background: transparent;
-	}
-
-	.is-printer-friendly .may-hire-box {
-		border-color: #000;
-		background: #fff;
 	}
 
 	.is-printer-friendly .stats-values {
