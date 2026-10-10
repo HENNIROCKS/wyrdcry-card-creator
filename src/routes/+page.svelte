@@ -34,6 +34,55 @@
 		border-color: var(--ui-text-subtle);
 	}
 
+	.on-hold-sticker {
+		position: absolute;
+		top: -44px;
+		left: -176px;
+		width: 136px;
+		height: 136px;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+		gap: 4px;
+		padding: 22px;
+		background: tomato;
+		color: #18181B;
+		border-radius: 50%;
+		box-shadow: 0 6px 14px rgba(0, 0, 0, 0.35);
+		font-size: 0.75rem;
+		font-weight: 600;
+		letter-spacing: 0;
+		line-height: 1.15;
+		text-align: center;
+		text-decoration: none;
+		rotate: -12deg;
+		transition: scale 0.15s;
+	}
+
+	.on-hold-sticker strong {
+		font-size: 1.05rem;
+		font-weight: 800;
+		text-transform: uppercase;
+		letter-spacing: 0.04em;
+	}
+
+	.on-hold-sticker:hover,
+	.on-hold-sticker:focus-visible {
+		scale: 1.05;
+	}
+
+	/* Below lg the title leaves no room beside it, so the sticker sits centred
+	   above. top is the sticker's height plus 24px of air; the wrapper's mt-36
+	   keeps that space free */
+	@media (max-width: 1023px) {
+		.on-hold-sticker {
+			top: -160px;
+			left: 50%;
+			translate: -50% 0;
+		}
+	}
+
 	.landing-bg {
 		background-size: cover;
 		background-position: center;
@@ -44,10 +93,23 @@
 	class="landing-bg min-h-screen bg-zinc-900 text-white flex flex-col items-center justify-center gap-6 py-10"
 	style="background-image: linear-gradient(var(--landing-overlay), var(--landing-overlay)), url('{base}/landing-bg.jpg');"
 >
-	<h1 class="text-4xl font-bold tracking-wide text-center px-6">
-		Wyrdcry Card Creator
-		<span class="align-middle text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-800 border border-zinc-600 rounded px-2 py-0.5 ml-1">{t('ui.beta-badge')}</span>
-	</h1>
+	<div class="relative mx-6 mt-36 lg:mt-0">
+		<h1 class="text-4xl font-bold tracking-wide text-center">
+			Wyrdcry Card Creator
+			<span class="align-middle text-xs font-semibold uppercase tracking-wider text-zinc-400 bg-zinc-800 border border-zinc-600 rounded px-2 py-0.5 ml-1">{t('ui.beta-badge')}</span>
+		</h1>
+		<a
+			href="https://hennirocks.github.io/wyrdcry-warband-deck/"
+			target="_blank"
+			rel="noopener noreferrer"
+			class="on-hold-sticker"
+			title={t('ui.on-hold-notice')}
+		>
+			<strong>{t('ui.on-hold-sticker')}</strong>
+			<span>{t('ui.on-hold-link')}</span>
+			<span class="sr-only">{t('ui.on-hold-notice')}</span>
+		</a>
+	</div>
 	<div class="flex flex-col items-stretch gap-3 w-full max-w-xs px-6 my-4">
 		<a href="{base}/fighter" class="px-8 py-4 bg-[#125E3C] hover:bg-[#16754A] rounded text-white font-semibold text-lg text-center transition">
 			{t('ui.fighter-card')}

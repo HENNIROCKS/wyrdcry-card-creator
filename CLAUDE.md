@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Browser-based tool for creating Warcry (Warhammer Age of Sigmar) fighter cards, text/ability cards, and card backs with custom image uploads and editable values. No backend, no persistent storage — everything runs client-side. Forked from warcry-card-creator-2026 with the runemark system, faction hierarchy, monster damage brackets, and the deployment/reference card editors removed.
 
+**On hold** in favour of the Wyrdcry Warband Deck (`~/Sites/wyrdcry-warband-deck`). The landing page carries a round tomato sticker (`.on-hold-sticker`, links to the deck) left of the title (centred above it below `lg`); the README opens with a matching note.
+
 ## Stack
 
 - **SvelteKit 2 + Vite** (Svelte 5 runes syntax)
@@ -34,7 +36,7 @@ PATH="$HOME/Library/Application Support/Herd/config/nvm/versions/node/v22.22.0/b
 
 ### Routes
 
-- `/` — landing page, links to all three card editors
+- `/` — landing page, links to all three card editors; the on-hold sticker sits on the title
 - `/fighter` — fighter card editor
 - `/text` — text/ability card editor
 - `/card-back` — card back editor

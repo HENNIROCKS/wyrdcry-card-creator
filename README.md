@@ -1,5 +1,8 @@
 # Wyrdcry Card Creator (Beta)
 
+> [!NOTE]
+> This project is currently on hold in favour of the [Wyrdcry Warband Deck](https://hennirocks.github.io/wyrdcry-warband-deck/) ([repo](https://github.com/HENNIROCKS/wyrdcry-warband-deck)). The editors keep working, but no further development is planned for now.
+
 A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.
 
 [Wyrdcry](https://wyrdcry.net/) is an "unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim."
