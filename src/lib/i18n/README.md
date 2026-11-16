@@ -32,7 +32,7 @@ Their position in the sentence can move freely; only the spelling has to match.
 Values in the `card` and `weapons` namespaces are rendered directly on the card. Use `|` to insert a line break when a translated string is too long to fit in a column header or weapon name cell:
 
 ```json
-"col-defense": "Verteidi|gung"
+"col-range": "Reich|weite"
 ```
 
 The `|` character is stripped from dropdown option labels in the editor — it only affects the rendered card. The `ui` namespace does not support `|` line breaks.

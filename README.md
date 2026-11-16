@@ -1,8 +1,5 @@
 # Wyrdcry Card Creator (Beta)
 
-> [!NOTE]
-> This project is currently on hold in favour of the [Wyrdcry Warband Deck](https://hennirocks.github.io/wyrdcry-warband-deck/) ([repo](https://github.com/HENNIROCKS/wyrdcry-warband-deck)). The editors keep working, but no further development is planned for now.
-
 A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. This is a fan project made for the community; it is not commercial and has no affiliation with or endorsement from Games Workshop.
 
 [Wyrdcry](https://wyrdcry.net/) is an "unofficial fan-made hack of Warcry, dragged through the dirt and madness of Mordheim."
@@ -11,9 +8,9 @@ A card creator for Warhammer Age of Sigmar: Warcry, built with a modern stack. T
 
 Browser-based tool for creating custom Warcry cards. No backend, no login, everything runs client-side.
 
-**Fighter card editor** — upload a model photo, set name and characteristics (Move, Fight, Shoot, Defense, Health, Bravery, Base Size), and build a weapon profile table (up to three weapons). **Is Hired Sword** adds the hire fee: a gold coins badge on the model image plus a line of hiring terms under the fighter's name. On mobile, pan and pinch-to-zoom the model image directly on the preview. Export as a print-ready PNG.
+**Fighter card editor** — upload a model photo, set name, an optional fluff text, keywords and characteristics (Move, Fight, Shoot, Armour, Health, Bravery) with the fighter's Gold Coins and Renown, and build a weapon profile table (up to three weapons). Without a photo the image field shows the fighter's initials. On mobile, pan and pinch-to-zoom the model image directly on the preview. Export as a print-ready PNG.
 
-**Text card editor** — set card name and card type: **Talent** (covers traits, abilities and reactions), **Equipment**, or a custom label. The type is rendered as a full-width banderole: a torn-edge ribbon that spans slightly beyond the card edges. Equipment cards add a weapon profile table (Weapon / Range / Attacks / Damage / Gold Coins) with up to three rows. The Card Elements checkboxes toggle which sections appear: flavour text, prerequisite text in a framed box (not available on Equipment cards), and an optional caption at the bottom of the card. The body/flavour/prerequisite markup toolbar has bold, italic, and an **A↓ font size toggle** for denser cards. Export as a print-ready PNG.
+**Text card editor** — set card name and card type: **Talent** (covers traits, abilities and reactions), **Equipment**, or a custom label. The type is rendered as a full-width banderole: a torn-edge ribbon that spans slightly beyond the card edges. Equipment cards add a weapon profile table (Weapon / Range / Attacks / Damage / Gold Coins) with up to three rows. The Card Elements checkboxes toggle which sections appear: flavour text and prerequisite text in a framed box (not available on Equipment cards). The body/flavour/prerequisite markup toolbar has bold, italic, and an **A↓ font size toggle** for denser cards. Export as a print-ready PNG.
 
 **Card back editor** — create a matching card back with optional name text, a custom background image (pan and pinch-to-zoom on mobile), and configurable text colour. A "mirrored name" option repeats the name upside-down for a symmetrical playing-card style. Export as a print-ready PNG; printer-friendly mode forces black on white.
 
@@ -43,7 +40,7 @@ The tool ships with English and German. Adding a new language requires a single 
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for code style, architecture constraints, and how to submit a PR.
 
-Like this? Check out the [Warcry Card Creator 2026](https://hennirocks.github.io/warcry-card-creator-2026/), the project this tool was forked from.
+Like this? Check out the [Warcry Card Creator 2026](https://hennirocks.github.io/warcry-card-creator-2026/), the project this tool was forked from, and [Fantasy City Warbands](https://hennirocks.github.io/fantasy-city-warbands/).
 
 ## License
 

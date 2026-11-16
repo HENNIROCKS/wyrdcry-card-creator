@@ -1,32 +1,38 @@
 <script lang="ts">
-	import type { FighterCardData } from '$lib/types';
 	import { cardSize } from '$lib/card-size.svelte';
+	import type { FighterCardData } from '$lib/types';
+	import { fittext } from '$lib/fit-text';
+	import runemarkShapeRaw from '$lib/runemark-shape.svg?raw';
 	import { t } from '$lib/i18n/index.svelte';
 	import WeaponTable from '$lib/components/WeaponTable.svelte';
-	import runemarkShapeRaw from '$lib/runemark-shape.svg?raw';
 
 	const runemarkMaskUrl = `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(runemarkShapeRaw)}")`;
 
 	let { data, printerFriendly = false, exporting = false }: { data: FighterCardData; printerFriendly?: boolean; exporting?: boolean } = $props();
 
-	const hasCaption = $derived(data.showCaption && !!data.imageCaption);
-	const hasBadge = $derived(data.isHiredSword && !!data.goldCoinsValue);
+	const hasFluff = $derived(data.showFluff && !!data.fluff.trim());
+	const hasCampaign = $derived(!!data.goldCoins.trim() || !!data.renown.trim());
 
-	function fittext(node: HTMLElement, _value?: unknown) {
-		function fit() {
-			node.style.fontSize = '';
-			const max = node.clientWidth;
-			let size = parseFloat(getComputedStyle(node).fontSize);
-			while (node.scrollWidth > max && size > 8) {
-				size -= 0.5;
-				node.style.fontSize = `${size}px`;
-			}
-		}
-		fit();
-		const ro = new ResizeObserver(fit);
-		ro.observe(node);
-		return { update: () => requestAnimationFrame(fit), destroy: () => ro.disconnect() };
-	}
+	const nameParts = $derived((data.name || t('card.fighter-name-placeholder')).split('|'));
+
+	/* The longest line of the name sets its size: a name past 16 characters is set
+	   smaller in proportion, down to 28px. */
+	const nameChars = $derived(Math.max(1, ...nameParts.map((part) => part.trim().length)));
+
+	/* Without a picture the image field carries the fighter's initials: first and
+	   last word of the name, or of the subtitle for a fighter without a name; a
+	   hyphen or a line break divides words. A single word gives its first two
+	   letters. */
+	const initials = $derived.by(() => {
+		const source = (data.name || (data.showSubtitle ? data.subtitle : '')).trim();
+		if (!source) return '';
+		const first = (word: string) => word.match(/\p{L}/u)?.[0] ?? '';
+		const words = source.split(/[\s|-]+/).filter(Boolean);
+		if (!words.length) return '';
+		if (words.length > 1) return (first(words[0]) + first(words[words.length - 1])).toUpperCase();
+		const [one = '', two = ''] = words[0].match(/\p{L}/gu) ?? [];
+		return one.toUpperCase() + two.toLowerCase();
+	});
 
 	function fitTalentsBox(node: HTMLElement, _value?: unknown) {
 		function fit() {
@@ -71,65 +77,76 @@
 			<div class="image-inner" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
 				{#if data.modelImage}
 					<img class="model-img" src={data.modelImage} alt="Fighter" style="object-position: {data.imageOffsetX}% {data.imageOffsetY}%; transform: scale({data.imageZoom}); transform-origin: {data.imageOffsetX}% {data.imageOffsetY}%" />
-				{:else}
-					<div class="model-placeholder">
-						{#if !exporting && !printerFriendly}<span>{t('card.upload-model-image')}</span>{/if}
-					</div>
 				{/if}
 			</div>
+			{#if !data.modelImage && initials}<span class="initials" aria-hidden="true">{initials}</span>{/if}
 		</div>
-		<div class="image-header" class:clears-badge={hasBadge}>
-			<h1 class="fighter-name">
+		<div class="image-header">
+			<h1 class="fighter-name" style="--chars: {nameChars}">
 				{#if data.isNamedCharacter}<span class="chevron">«</span>{/if}
-				{#each (data.name || t('card.fighter-name-placeholder')).split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}
+				{#each nameParts as part, i}{#if i > 0}<br>{/if}{part}{/each}
 				{#if data.isNamedCharacter}<span class="chevron">»</span>{/if}
 			</h1>
 			{#if data.showSubtitle && data.subtitle}
 				<p class="fighter-subtitle">{data.subtitle}</p>
 			{/if}
-			{#if data.isHiredSword && data.mayHireText}
-				<p class="may-hire-text">{@html parseMarkup(data.mayHireText)}</p>
-			{/if}
 		</div>
 	</div>
 
-	{#if hasBadge}
-		<div class="gold-coins-badge-border" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
-			<div class="gold-coins-badge" style="mask-image: {runemarkMaskUrl}; -webkit-mask-image: {runemarkMaskUrl};">
-				<span class="gold-coins-text">{data.goldCoinsValue}</span>
-				<span class="gold-coins-abbr">{t('card.gold-coins-abbr')}</span>
-			</div>
-		</div>
-	{/if}
-
 	<!-- PARCHMENT SECTION -->
-	<div class="parchment" class:has-caption={hasCaption}>
-		<!-- Characteristics box -->
-		<div class="stats-box">
-			<div class="stats-header">
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-move').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-fight').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-shoot').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-defense').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-health').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-bravery').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-				<div class="stat-col label-col"><span class="header-text">{#each t('card.col-base-size').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
-			</div>
-			<div class="stats-values">
-				<div class="stat-val" use:fittext={data.move}>{formatMove(data.move)}</div>
-				<div class="stat-val" use:fittext={data.fight}>{data.fight || '—'}</div>
-				<div class="stat-val" use:fittext={data.shoot}>{data.shoot || '—'}</div>
-				<div class="stat-val" use:fittext={data.defense}>{data.defense || '—'}</div>
-				<div class="stat-val" use:fittext={data.health}>{data.health || '—'}</div>
-				<div class="stat-val" use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
-				<div class="stat-val" use:fittext={data.baseSize}>{data.baseSize}</div>
-			</div>
-		</div>
-
-		{#if data.weapons.length}
-			<!-- Weapons box -->
-			<WeaponTable weapons={data.weapons} tight {printerFriendly} />
+	<div class="parchment">
+		{#if hasFluff}
+			<p class="fluff">{data.fluff}</p>
 		{/if}
+
+		{#if data.keywords.length}
+			<div class="keywords-row">
+				{#each data.keywords as keyword}
+					<span class="keyword-pill">{keyword}</span>
+				{/each}
+			</div>
+		{/if}
+
+		<div class="profile">
+			<!-- Characteristics box -->
+			<div class="stats-box">
+				<div class="stats-header">
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-move').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-fight').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-shoot').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-armour').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-health').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+					<div class="stat-col label-col"><span class="header-text">{#each t('card.col-bravery').split('|') as part, i}{#if i > 0}<br>{/if}{part}{/each}</span></div>
+				</div>
+				<div class="stats-values">
+					<div class="stat-val" use:fittext={data.move}>{formatMove(data.move)}</div>
+					<div class="stat-val" use:fittext={data.fight}>{data.fight || '—'}</div>
+					<div class="stat-val" use:fittext={data.shoot}>{data.shoot || '—'}</div>
+					<div class="stat-val" use:fittext={data.armour}>{data.armour || '—'}</div>
+					<div class="stat-val" use:fittext={data.health}>{data.health || '—'}</div>
+					<div class="stat-val" use:fittext={data.bravery}>{formatBravery(data.bravery)}</div>
+				</div>
+			</div>
+
+			<!-- Campaign box, left out while neither value is set -->
+			{#if hasCampaign}
+				<div class="stats-box">
+					<div class="stats-header">
+						<div class="stat-col label-col"><span class="header-text">{t('card.col-gold-coins').replaceAll('|', '')}</span></div>
+						<div class="stat-col label-col"><span class="header-text">{t('card.col-renown')}</span></div>
+					</div>
+					<div class="stats-values">
+						<div class="stat-val" use:fittext={data.goldCoins}>{data.goldCoins || '—'}</div>
+						<div class="stat-val" use:fittext={data.renown}>{data.renown || '—'}</div>
+					</div>
+				</div>
+			{/if}
+
+			{#if data.weapons.length}
+				<!-- Weapons box -->
+				<WeaponTable weapons={data.weapons} tight {printerFriendly} />
+			{/if}
+		</div>
 
 		<!-- Talents box -->
 		<div class="talents-box" use:fitTalentsBox={data.talentsText}>
@@ -139,19 +156,7 @@
 				<p class="talents-text talents-placeholder">{t('card.talents-placeholder')}</p>
 			{/if}
 		</div>
-
-		{#if data.keywords.length}
-			<div class="keywords-row">
-				{#each data.keywords as keyword}
-					<span class="keyword-pill">{keyword}</span>
-				{/each}
-			</div>
-		{/if}
 	</div>
-
-	{#if hasCaption}
-		<div class="image-caption">{data.imageCaption}</div>
-	{/if}
 </div>
 
 <style>
@@ -183,7 +188,7 @@
 
 	.image-section {
 		flex: 0 0 175px;
-		margin: 16px 38px 0; /* left edge shares the parchment column's flush line */
+		margin: 16px 38px 0 30px; /* left edge shares the parchment column's flush line */
 		display: flex;
 		gap: 12px;
 		border: 0;
@@ -213,7 +218,7 @@
 		background: transparent;
 	}
 
-	/* Same shape as the gold coins badge, cut from the runemark SVG. */
+	/* Cut from the runemark SVG. */
 	.image-inner {
 		position: absolute;
 		inset: 0;
@@ -236,140 +241,24 @@
 		background: transparent;
 	}
 
-	.model-placeholder {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		color: #FAF6F3;
-		font-family: system-ui, sans-serif;
-		font-size: 16px;
-		line-height: 1.25;
-		text-align: center;
-		padding: 0 22px;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.image-caption {
+	/* A watermark over the empty field; decoration, the name beside it carries
+	   the text. */
+	.initials {
 		position: absolute;
-		bottom: 20px;
-		left: 0;
-		right: 0;
-		text-align: center;
-		font-family: 'Alegreya', serif;
-		font-size: 13px;
-		color: #000;
-		opacity: 0.5;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.is-printer-friendly .image-caption {
-		opacity: 1;
-	}
-
-	/* The badge reaches into this column; the text steps aside where it does. */
-	.clears-badge .may-hire-text {
-		padding-left: 20px;
-	}
-
-	.may-hire-text {
-		width: 100%;
-		font-family: 'Alegreya', serif;
-		font-size: 14px;
-		line-height: 1.3;
-		color: #000;
-		text-align: center;
-		margin: 6px 0 0;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.may-hire-text :global(strong),
-	.may-hire-text :global(em),
-	.may-hire-text :global(.caps) {
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.may-hire-text :global(.caps) {
-		text-transform: uppercase;
-	}
-
-	.gold-coins-badge-border {
-		position: absolute;
-		top: 134px; /* overlaps the model image's lower right corner */
-		left: 172px;
-		width: 70px;
-		height: 70px;
-		background: #FAF6F3;
+		inset: 0;
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		border: 0;
-		outline: none;
-		mask-size: 100% 100%;
-		-webkit-mask-size: 100% 100%;
-		mask-repeat: no-repeat;
-		-webkit-mask-repeat: no-repeat;
-	}
-
-	.gold-coins-badge {
-		width: 68px;
-		height: 68px;
-		background: #16754A;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		border: 0;
-		outline: none;
-		mask-size: 100% 100%;
-		-webkit-mask-size: 100% 100%;
-		mask-repeat: no-repeat;
-		-webkit-mask-repeat: no-repeat;
-	}
-
-	.gold-coins-text {
 		font-family: 'Grenze Gotisch', serif;
-		font-size: 38px;
 		font-weight: 600;
-		color: #FAF6F3;
-		text-align: center;
+		font-size: 100px;
 		line-height: 1;
-		border: 0;
-		outline: none;
-		background: transparent;
+		color: rgba(255, 255, 255, 0.32);
+		pointer-events: none;
 	}
 
-	.gold-coins-abbr {
-		font-family: 'Alegreya', serif;
-		font-size: 1em;
-		color: #FAF6F3;
-		text-align: center;
-		line-height: 1;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.is-printer-friendly .gold-coins-badge-border {
-		background: #000;
-	}
-
-	.is-printer-friendly .gold-coins-badge {
-		background: #fff;
-	}
-
-	.is-printer-friendly .gold-coins-text,
-	.is-printer-friendly .gold-coins-abbr {
-		color: #000;
+	.is-printer-friendly .initials {
+		color: rgba(0, 0, 0, 0.2);
 	}
 
 	/* ── PARCHMENT SECTION ─────────────────────── */
@@ -377,7 +266,7 @@
 	.parchment {
 		flex: 1 1 auto;
 		min-height: 0;
-		padding: 24px 38px 26px;
+		padding: 24px 30px 26px;
 		display: flex;
 		flex-direction: column;
 		gap: 14px;
@@ -395,7 +284,7 @@
 	.fighter-name {
 		font-family: 'Grenze Gotisch', serif;
 		font-weight: 600;
-		font-size: 38px;
+		font-size: clamp(28px, calc(38px * 16 / var(--chars, 16)), 38px);
 		width: 100%;
 		color: #000;
 		line-height: 1.1;
@@ -420,6 +309,28 @@
 		border: 0;
 		outline: none;
 		background: transparent;
+	}
+
+	/* Prose, not a rule: no wash, no border, set apart only by the italic. */
+	.fluff {
+		flex-shrink: 0;
+		margin: 14px 0 0;
+		font-family: 'Alegreya', serif;
+		font-size: 18px;
+		line-height: 1.4;
+		font-style: italic;
+		color: #000;
+		white-space: pre-wrap;
+	}
+
+	/* The tables read as one block: the parchment's gap between them, roughly
+	   twice that to the keywords above and the talents below. */
+	.profile {
+		flex-shrink: 0;
+		display: flex;
+		flex-direction: column;
+		gap: 14px;
+		margin-bottom: 16px;
 	}
 
 	/* ── SHARED BOX STYLE ──────────────────────── */
@@ -496,10 +407,11 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
-		   their line box, while values carrying a descender (2/4) sit slightly
-		   above it. The padding lifts everything by 1.5px, which splits that. */
-		padding: 0 4px 3px;
+		/* Grenze Gotisch defaults to old-style figures, which hang below the
+		   baseline. The lining set matches the column labels; the tabular one
+		   keeps the digits of a column over each other. */
+		font-variant-numeric: lining-nums tabular-nums;
+		padding: 0 4px;
 		border: 0;
 		outline: none;
 		background: transparent;
@@ -550,12 +462,16 @@
 
 	/* ── KEYWORDS ──────────────────────────────── */
 
+	/* Parts the image section from the profile more than the parchment's own gap
+	   does, so the pills read with the name above rather than the
+	   characteristics below. */
 	.keywords-row {
 		flex-shrink: 0;
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: center;
 		gap: 8px;
+		margin: 16px 0;
 	}
 
 	.keyword-pill {
@@ -568,12 +484,6 @@
 		border: 1px solid #16754A;
 		border-radius: 999px;
 		padding: 7px 14px;
-	}
-
-	/* The caption sits absolutely on the card's bottom edge — the keywords give
-	   way so the two don't collide. */
-	.parchment.has-caption {
-		padding-bottom: 40px;
 	}
 
 	/* ── PRINTER-FRIENDLY OVERRIDES ────────────── */

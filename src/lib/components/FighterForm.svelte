@@ -4,7 +4,6 @@
 
 	let { data }: { data: FighterCardData } = $props();
 	let talentsTextEl: HTMLTextAreaElement;
-	let mayHireTextEl: HTMLTextAreaElement;
 	let keywordDraft = $state('');
 
 	function handleImageUpload(e: Event) {
@@ -29,11 +28,11 @@
 		data.weapons = data.weapons.filter((_, idx) => idx !== i);
 	}
 
-	function wrapSelection(el: HTMLTextAreaElement, marker: string, field: 'talentsText' | 'mayHireText') {
+	function wrapSelection(el: HTMLTextAreaElement, marker: string) {
 		const start = el.selectionStart;
 		const end = el.selectionEnd;
-		const selected = data[field].slice(start, end);
-		data[field] = data[field].slice(0, start) + marker + selected + marker + data[field].slice(end);
+		const selected = data.talentsText.slice(start, end);
+		data.talentsText = data.talentsText.slice(0, start) + marker + selected + marker + data.talentsText.slice(end);
 		requestAnimationFrame(() => {
 			el.focus();
 			el.setSelectionRange(start + marker.length, end + marker.length);
@@ -61,7 +60,7 @@
 </script>
 
 <div class="space-y-10 text-sm">
-	<!-- Name / Subtitle / Caption -->
+	<!-- Name / Subtitle / Fluff -->
 	<section>
 		<label class="field-label" for="fighter-name">{t('ui.form-fighter')} <span class="normal-case font-normal text-zinc-500">{t('ui.form-line-break-hint')}</span></label>
 		<input
@@ -81,9 +80,9 @@
 				bind:value={data.subtitle}
 			/>
 		{/if}
-		{#if data.showCaption}
-			<label class="field-label mt-2" for="img-caption">{t('ui.form-caption')}</label>
-			<input id="img-caption" class="field-input" type="text" placeholder={t('ui.form-placeholder-caption-fighter')} bind:value={data.imageCaption} />
+		{#if data.showFluff}
+			<label class="field-label mt-2" for="fighter-fluff">{t('ui.form-fluff')}</label>
+			<textarea id="fighter-fluff" class="field-input resize-none" rows="3" bind:value={data.fluff}></textarea>
 		{/if}
 	</section>
 
@@ -96,16 +95,12 @@
 				<span class="text-zinc-200">{t('ui.form-named-fighter')}</span>
 			</label>
 			<label class="flex cursor-pointer items-center gap-3">
-				<input type="checkbox" bind:checked={data.isHiredSword} class="h-4 w-4 rounded accent-[#16754A]" />
-				<span class="text-zinc-200">{t('ui.form-is-hired-sword')}</span>
-			</label>
-			<label class="flex cursor-pointer items-center gap-3">
 				<input type="checkbox" bind:checked={data.showSubtitle} class="h-4 w-4 rounded accent-[#16754A]" />
 				<span class="text-zinc-200">{t('ui.form-show-subtitle')}</span>
 			</label>
 			<label class="flex cursor-pointer items-center gap-3">
-				<input type="checkbox" bind:checked={data.showCaption} class="h-4 w-4 rounded accent-[#16754A]" />
-				<span class="text-zinc-200">{t('ui.form-show-caption')}</span>
+				<input type="checkbox" bind:checked={data.showFluff} class="h-4 w-4 rounded accent-[#16754A]" />
+				<span class="text-zinc-200">{t('ui.form-show-fluff')}</span>
 			</label>
 		</div>
 	</section>
@@ -151,36 +146,32 @@
 		{/if}
 	</section>
 
-	<!-- Hire Fee -->
-	{#if data.isHiredSword}
-		<section>
-			<p class="field-label mb-2">{t('ui.form-hire-fee')}</p>
-			<div class="space-y-3">
-				<div>
-					<label class="sublabel" for="gold-coins-value">{t('ui.form-gold-coins-value')}</label>
-					<input id="gold-coins-value" type="text" inputmode="numeric" class="field-input" bind:value={data.goldCoinsValue} />
-				</div>
-				<div>
-					<label class="sublabel" for="may-hire-text">{t('ui.form-may-hire')}</label>
-					<div class="markup-toolbar">
-						<button type="button" class="markup-btn caps" title={t('ui.form-uppercase')} onclick={() => wrapSelection(mayHireTextEl, '^^', 'mayHireText')}>AA</button>
-					</div>
-					<textarea
-						id="may-hire-text"
-						class="field-input resize-none"
-						rows="4"
-						bind:value={data.mayHireText}
-						bind:this={mayHireTextEl}
-					></textarea>
-				</div>
-			</div>
-		</section>
-	{/if}
+	<!-- Keywords -->
+	<section>
+		<label class="field-label" for="keywords-input">{t('ui.form-keywords')}</label>
+		<div class="tags-wrap">
+			{#each data.keywords as keyword, i}
+				<span class="tag-chip">
+					{keyword}
+					<button type="button" class="tag-remove" aria-label={t('ui.form-remove')} onclick={() => removeKeyword(i)}>×</button>
+				</span>
+			{/each}
+			<input
+				id="keywords-input"
+				class="tag-input"
+				type="text"
+				placeholder={t('ui.form-keywords-placeholder')}
+				bind:value={keywordDraft}
+				onkeydown={handleKeywordKeydown}
+				onblur={commitKeyword}
+			/>
+		</div>
+	</section>
 
 	<!-- Characteristics -->
 	<section>
 		<p class="field-label mb-2">{t('ui.form-characteristics')}</p>
-		<div class="grid grid-cols-3 gap-2 sm:grid-cols-8">
+		<div class="grid grid-cols-3 gap-2 sm:grid-cols-6">
 			<div>
 				<label class="sublabel" for="move">{t('ui.form-move')}</label>
 				<input id="move" class="field-input text-center" placeholder="—" bind:value={data.move} />
@@ -194,8 +185,8 @@
 				<input id="shoot" class="field-input text-center" placeholder="—" bind:value={data.shoot} />
 			</div>
 			<div>
-				<label class="sublabel" for="defense">{t('ui.form-defense')}</label>
-				<input id="defense" class="field-input text-center" placeholder="—" bind:value={data.defense} />
+				<label class="sublabel" for="armour">{t('ui.form-armour')}</label>
+				<input id="armour" class="field-input text-center" placeholder="—" bind:value={data.armour} />
 			</div>
 			<div>
 				<label class="sublabel" for="health">{t('ui.form-health')}</label>
@@ -205,31 +196,15 @@
 				<label class="sublabel" for="bravery">{t('ui.form-bravery')}</label>
 				<input id="bravery" class="field-input text-center" placeholder="—" bind:value={data.bravery} />
 			</div>
-			<div class="col-span-2">
-				<label class="sublabel" for="baseSize">{t('ui.form-base-size')}</label>
-				<select id="baseSize" class="field-input text-center" style="text-align-last: center" bind:value={data.baseSize}>
-					<option>⌀ 20</option>
-					<option>⌀ 25</option>
-					<option>⌀ 28.5</option>
-					<option>⌀ 32</option>
-					<option>⌀ 40</option>
-					<option>⌀ 50</option>
-					<option>⌀ 60</option>
-					<option>⌀ 70</option>
-					<option>⌀ 80</option>
-					<option>⌀ 90</option>
-					<option>⌀ 100</option>
-					<option>⌀ 120</option>
-					<option>⌀ 130</option>
-					<option>⌀ 160</option>
-					<option>50 × 25</option>
-					<option>60 × 35</option>
-					<option>75 × 42</option>
-					<option>90 × 52</option>
-					<option>105 × 70</option>
-					<option>120 × 92</option>
-					<option>170 × 105</option>
-				</select>
+		</div>
+		<div class="mt-2 grid grid-cols-2 gap-2">
+			<div>
+				<label class="sublabel" for="gold-coins">{t('ui.form-weapon-gold-coins')}</label>
+				<input id="gold-coins" class="field-input text-center" inputmode="numeric" placeholder="—" bind:value={data.goldCoins} />
+			</div>
+			<div>
+				<label class="sublabel" for="renown">{t('ui.form-renown')}</label>
+				<input id="renown" class="field-input text-center" inputmode="numeric" placeholder="—" bind:value={data.renown} />
 			</div>
 		</div>
 	</section>
@@ -275,9 +250,9 @@
 	<section>
 		<label class="field-label" for="talents-text">{t('ui.form-talents')}</label>
 		<div class="markup-toolbar">
-			<button type="button" class="markup-btn" title={t('ui.form-bold')} onclick={() => wrapSelection(talentsTextEl, '**', 'talentsText')}>B</button>
-			<button type="button" class="markup-btn italic" title={t('ui.form-italic')} onclick={() => wrapSelection(talentsTextEl, '*', 'talentsText')}>I</button>
-			<button type="button" class="markup-btn caps" title={t('ui.form-uppercase')} onclick={() => wrapSelection(talentsTextEl, '^^', 'talentsText')}>AA</button>
+			<button type="button" class="markup-btn" title={t('ui.form-bold')} onclick={() => wrapSelection(talentsTextEl, '**')}>B</button>
+			<button type="button" class="markup-btn italic" title={t('ui.form-italic')} onclick={() => wrapSelection(talentsTextEl, '*')}>I</button>
+			<button type="button" class="markup-btn caps" title={t('ui.form-uppercase')} onclick={() => wrapSelection(talentsTextEl, '^^')}>AA</button>
 		</div>
 		<textarea
 			id="talents-text"
@@ -286,28 +261,6 @@
 			bind:value={data.talentsText}
 			bind:this={talentsTextEl}
 		></textarea>
-	</section>
-
-	<!-- Keywords -->
-	<section>
-		<label class="field-label" for="keywords-input">{t('ui.form-keywords')}</label>
-		<div class="tags-wrap">
-			{#each data.keywords as keyword, i}
-				<span class="tag-chip">
-					{keyword}
-					<button type="button" class="tag-remove" aria-label={t('ui.form-remove')} onclick={() => removeKeyword(i)}>×</button>
-				</span>
-			{/each}
-			<input
-				id="keywords-input"
-				class="tag-input"
-				type="text"
-				placeholder={t('ui.form-keywords-placeholder')}
-				bind:value={keywordDraft}
-				onkeydown={handleKeywordKeydown}
-				onblur={commitKeyword}
-			/>
-		</div>
 	</section>
 </div>
 

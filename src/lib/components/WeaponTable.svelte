@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fittext } from '$lib/fit-text';
 	import { t } from '$lib/i18n/index.svelte';
 
 	type Row = { name: string; range: string; attacks: string; damage: string; goldCoins?: string };
@@ -14,6 +15,10 @@
 		if (!value) return '—';
 		return value === '0' ? value : `${value}"`;
 	}
+
+	/* A long weapon name is set smaller rather than wrapped, down to 14px – past
+	   that it is cut. */
+	const fitName = (node: HTMLElement, value?: unknown) => fittext(node, value, 14);
 </script>
 
 <div class="weapon-box" class:is-tight={tight} class:is-printer-friendly={printerFriendly}>
@@ -28,7 +33,7 @@
 	</div>
 	{#each weapons as weapon}
 		<div class="weapon-values">
-			<div class="weapon-val weapon-val-name">{weapon.name || '—'}</div>
+			<div class="weapon-val weapon-val-name"><span class="weapon-name" use:fitName={weapon.name}>{weapon.name || '—'}</span></div>
 			<div class="weapon-val">{formatRange(weapon.range)}</div>
 			<div class="weapon-val">{weapon.attacks || '—'}</div>
 			<div class="weapon-val">{weapon.damage || '—'}</div>
@@ -98,9 +103,6 @@
 
 	.weapon-col-name {
 		flex: 2 2 0;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 12px;
 	}
 
 	.header-text {
@@ -122,21 +124,26 @@
 		align-items: center;
 		justify-content: center;
 		white-space: nowrap;
-		/* Grenze Gotisch's old-style figures sit 1–2px below the optical centre of
-		   their line box, while values carrying a descender (2/4) sit slightly
-		   above it. The padding lifts everything by 1.5px, which splits that. */
-		padding: 0 4px 3px;
+		/* Grenze Gotisch defaults to old-style figures, which hang below the
+		   baseline. The lining set matches the headers; the tabular one keeps the
+		   digits of a column over each other. */
+		font-variant-numeric: lining-nums tabular-nums;
+		padding: 0 4px;
 	}
 
-	/* Letters carry full ascenders and descenders — they already centre, so the
-	   name column keeps the plain padding. */
 	.weapon-val-name {
 		flex: 2 2 0;
-		padding-bottom: 0;
-		white-space: normal;
-		justify-content: flex-start;
-		text-align: left;
-		padding-left: 12px;
+		min-width: 0;
+	}
+
+	/* The routes wrap the card in line-height: 0; a clipping box needs its own
+	   line height, or it clips its text away. */
+	.weapon-name {
+		min-width: 0;
+		line-height: 1.3;
+		max-width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.weapon-box.is-printer-friendly {

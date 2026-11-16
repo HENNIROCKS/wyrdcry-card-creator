@@ -47,8 +47,6 @@
 		cardLabel: 'talent',
 		showFlavorText: true,
 		showPrerequisite: false,
-		showCaption: false,
-		imageCaption: '',
 		smallBodyText: false,
 		flavorText: '',
 		weapons: [{ name: '', range: '', attacks: '', damage: '', goldCoins: '' }],

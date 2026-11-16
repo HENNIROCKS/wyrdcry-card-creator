@@ -41,9 +41,6 @@
 			</div>
 		{/if}
 	</div>
-	{#if data.showCaption && data.imageCaption}
-		<div class="image-caption">{data.imageCaption}</div>
-	{/if}
 
 	<!-- PARCHMENT -->
 	<div class="parchment" class:small-body={data.smallBodyText}>
@@ -111,25 +108,6 @@
 		border: 0;
 		outline: none;
 		background: transparent;
-	}
-
-	.image-caption {
-		position: absolute;
-		bottom: 20px;
-		left: 0;
-		right: 0;
-		text-align: center;
-		font-family: 'Alegreya', serif;
-		font-size: 13px;
-		color: #000;
-		opacity: 0.5;
-		border: 0;
-		outline: none;
-		background: transparent;
-	}
-
-	.is-printer-friendly .image-caption {
-		opacity: 1;
 	}
 
 	/* ── PARCHMENT ──────────────────────────────── */

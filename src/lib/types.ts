@@ -12,23 +12,21 @@ export interface FighterCardData {
 	imageOffsetX: number; // 0–100, object-position x
 	imageOffsetY: number; // 0–100, object-position y
 	imageZoom: number;    // 1–3, scale factor
-	imageCaption: string;
-	isHiredSword: boolean;
-	goldCoinsValue: string;
-	mayHireText: string;      // markup: **bold**, *italic*, ^^uppercase^^
-	baseSize: string;         // e.g. "⌀ 32"
+	fluff: string;            // italic, line breaks kept
 	move: string;
 	fight: string;
 	shoot: string;
-	defense: string;
+	armour: string;
 	health: string;
 	bravery: string;
+	goldCoins: string;
+	renown: string;
 	weapons: FighterWeapon[]; // max 3 rows
 	talentsText: string;      // markup: **bold**, *italic*, ^^uppercase^^
 	keywords: string[];       // rendered as pills, uppercase
 	isNamedCharacter: boolean;
 	showSubtitle: boolean;
-	showCaption: boolean;
+	showFluff: boolean;
 }
 
 export interface CardBackData {
@@ -60,7 +58,5 @@ export interface TextCardData {
 	weapons: TextCardWeapon[];  // weapon table rows, max 3, shown only when cardLabel === 'equipment'
 	prerequisiteText: string;   // framed box
 	bodyText: string;
-	showCaption: boolean;
-	imageCaption: string;
 	smallBodyText: boolean;
 }

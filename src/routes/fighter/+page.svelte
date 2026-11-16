@@ -94,23 +94,21 @@
 		imageOffsetX: 50,
 		imageOffsetY: 50,
 		imageZoom: 1,
-		imageCaption: '',
-		isHiredSword: false,
-		goldCoinsValue: '65',
-		mayHireText: '',
-		baseSize: '⌀ 32',
+		fluff: '',
 		move: '5',
 		fight: '3',
 		shoot: '3',
-		defense: '3',
+		armour: '3',
 		health: '10',
 		bravery: '5',
+		goldCoins: '65',
+		renown: '0',
 		weapons: [{ name: 'Unarmed', range: '1', attacks: '2', damage: '1/2' }],
 		talentsText: '**[Double] Driven by Greed**: A fighter can only use this ability if it is carrying, or is within 1" of a treasure token. Add 1 to the Fight and Attacks characteristic of this fighter’s next melee attack action.',
 		keywords: ['Human', 'Mercenaries', 'Henchman'],
 		isNamedCharacter: false,
 		showSubtitle: false,
-		showCaption: false
+		showFluff: false
 	};
 
 	let data = $state<FighterCardData>(structuredClone(defaultData));

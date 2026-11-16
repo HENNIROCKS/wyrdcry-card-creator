@@ -6,8 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Browser-based tool for creating Warcry (Warhammer Age of Sigmar) fighter cards, text/ability cards, and card backs with custom image uploads and editable values. No backend, no persistent storage — everything runs client-side. Forked from warcry-card-creator-2026 with the runemark system, faction hierarchy, monster damage brackets, and the deployment/reference card editors removed.
 
-**On hold** in favour of the Wyrdcry Warband Deck (`~/Sites/wyrdcry-warband-deck`). The landing page carries a round tomato sticker (`.on-hold-sticker`, links to the deck) left of the title (centred above it below `lg`); the README opens with a matching note.
-
 ## Stack
 
 - **SvelteKit 2 + Vite** (Svelte 5 runes syntax)
@@ -36,7 +34,7 @@ PATH="$HOME/Library/Application Support/Herd/config/nvm/versions/node/v22.22.0/b
 
 ### Routes
 
-- `/` — landing page, links to all three card editors; the on-hold sticker sits on the title
+- `/` — landing page, links to all three card editors; the credit line links the Warcry Card Creator 2026 and Fantasy City Warbands
 - `/fighter` — fighter card editor
 - `/text` — text/ability card editor
 - `/card-back` — card back editor
@@ -55,7 +53,7 @@ PATH="$HOME/Library/Application Support/Herd/config/nvm/versions/node/v22.22.0/b
 
 - `FighterCard.svelte` / `FighterForm.svelte` — fighter card visual + form
 - `TextCard.svelte` / `TextForm.svelte` — text/ability card visual + form
-- `WeaponTable.svelte` — the weapon stat table both cards render; `showGoldCoins` adds the fifth column (text card), `tight` drops the row height 55 → 46 px (fighter card), `printerFriendly` swaps fills for outlines
+- `WeaponTable.svelte` — the weapon stat table both cards render; `showGoldCoins` adds the fifth column (text card), `tight` drops the row height 55 → 46 px (fighter card), `printerFriendly` swaps fills for outlines. Name column and values centred, figures in lining tabular numerals; a long weapon name shrinks on one line via `fittext` (`src/lib/fit-text.ts`) down to 14 px and is cut with an ellipsis past that
 - `CardSizeSelect.svelte` — bridge/poker picker + live size info line; sits in every export dropdown
 - `LangSwitch.svelte` — language switcher
 - `ThemeToggle.svelte` — light/dark theme toggle
@@ -68,13 +66,13 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 
 **Fighter card** (portrait, `cardSize.portrait` — 588×915 at bridge):
 
-- Top band (175px minimum), inset 38px left and right so it shares the parchment column's flush line: a row of two — a 175×175px model image on the left, masked with `runemark-shape.svg` (the gold coins badge's shape) and, in the space beside it, the centred fighter name, subtitle and hiring terms. The 175px is a flex basis, not a cap: a long name plus hiring terms grows the band and pushes the parchment down, which the talents box absorbs. The torn-edge SVG mask is text-card-only
-- Below: parchment area — characteristics table, weapons table, talents box, keywords as pills (`.keyword-pill`, green outline over a 25 % white wash so the parchment shows through, centred and wrapping; printer-friendly swaps the outline to black and drops the fill)
-- Characteristics columns, in order: Move, Fight, Shoot, Defense, Health, Bravery, Base
-- Weapons table (always rendered): Weapon/Range/Attacks/Damage columns (name column left-aligned, values centred), rows via `weapons: FighterWeapon[]`, a new card starting on `Unarmed 1" 2 1/2`, capped at `MAX_WEAPONS` = 3 with the add button disabled and a hint shown at the cap — same handling as the text card, minus the gold coins column. Both tables set column headers and values at 20 px
-- The parchment runs on tight metrics throughout — characteristics rows 46 px, gap 14 px, padding 24/38/26 px — and passes `tight` to `WeaponTable` so its rows match. Text blocks keep their size; `fitTalentsBox` shrinks the talents copy no further than 13 px
-- Vertical margins are symmetric: the model image sits 26 px below the card's top edge (`.image-section` margin plus the `.image-box` nudge) and the keyword pills 26 px above the bottom one. A set caption raises that bottom padding to 40 px through `.parchment.has-caption`, so the pills clear the absolutely positioned `.image-caption`
-- Hire fee (`isHiredSword` on `FighterCardData`) gates two elements and its own form section: the gold coins badge, absolutely positioned at `top: 134px / left: 172px` so it overlaps the model image's lower right corner, and `.may-hire-text`, a frameless 14 px line under the subtitle. The badge reaches 17 px into the header column, so `.clears-badge` indents that text out of its way
+- Top band (175px minimum), inset 30px left – the parchment column's flush line – and 38px right, as Fantasy City Warbands' card has it: a row of two — a 175×175px model image on the left, masked with `runemark-shape.svg` and, in the space beside it, the centred fighter name and subtitle. Without a picture the image field shows the fighter's initials as a watermark (first and last word of the name, or of the subtitle; a single word gives its first two letters), in the export too. The name runs at 38 px up to 16 characters on its longest `|` line and shrinks in proportion beyond, no smaller than 28 px. The 175px is a flex basis, not a cap: a long name plus subtitle grows the band and pushes the parchment down, which the talents box absorbs. The torn-edge SVG mask is text-card-only
+- Below: parchment area — fluff (`fluff`, shown when `showFluff` is set and it holds text; italic Alegreya 18 px, line breaks kept, 14 px above it), keywords as pills (`.keyword-pill`, green outline over a 25 % white wash so the parchment shows through, centred and wrapping, 16 px extra margin above and below so they read with the name; printer-friendly swaps the outline to black and drops the fill), then `.profile` — characteristics table, a two-column Gold Coins / Renown table (`goldCoins`, `renown`) in the same style, left out while both are empty, weapons table — and the talents box. As on Fantasy City Warbands' card, the tables keep the 14 px gap between them and stand 30 px off the keywords above and the talents below (`.profile` margin plus the gap)
+- Characteristics columns, in order: Move, Fight, Shoot, Armour, Health, Bravery
+- Weapons table (always rendered): Weapon/Range/Attacks/Damage columns (all columns centred), rows via `weapons: FighterWeapon[]`, a new card starting on `Unarmed 1" 2 1/2`, capped at `MAX_WEAPONS` = 3 with the add button disabled and a hint shown at the cap — same handling as the text card, minus the gold coins column. Both tables set column headers and values at 20 px
+- The parchment runs on tight metrics throughout — characteristics rows 46 px, gap 14 px, padding 24/30/26 px — and passes `tight` to `WeaponTable` so its rows match. Text blocks keep their size; `fitTalentsBox` shrinks the talents copy no further than 13 px
+- Vertical margins are symmetric: the model image sits 26 px below the card's top edge (`.image-section` margin plus the `.image-box` nudge) and the talents box ends 26 px above the bottom one
+- Form order: name, subtitle and fluff; card elements; model image; keywords; characteristics with Gold Coins and Renown in a second row; weapons; talents
 - `handleFileLoad` merges a loaded layout onto `defaultData`, so a JSON saved before a field existed still opens
 
 **Text card** (portrait, same ratio):
@@ -82,7 +80,7 @@ Cards are rendered as **CSS/HTML components** (not Canvas). Export uses `dom-to-
 - Three card types: **talent** (covers traits, abilities and reactions — the form shows that as a hint under the type picker), **equipment**, and a free custom label
 - Top: banderole only (no standard/non-banderole layout, no activation badge) — a full-width torn-edge ribbon (`<div class="banderole">`) overhanging the card edges, top-anchored in the image section; shows the card label (preset slugs: talent, equipment — or custom text); printer-friendly renders a stroke outline SVG instead of the filled shape
 - Parchment area — card name (rendered only if non-empty, no placeholder fallback), then: flavor text (italic, toggled), weapon stat table (Weapon/Range/Attacks/Damage/Gold Coins columns, rows via `weapons: TextCardWeapon[]`, shown only when `cardLabel === 'equipment'`, capped at `MAX_WEAPONS` = 3 with the add button disabled and a hint shown at the cap), prerequisite text (framed box, toggled — unavailable on equipment cards, the table and the prerequisite are mutually exclusive), body text
-- Show/hide flags on `TextCardData`: `showFlavorText`, `showPrerequisite`, `showCaption` — collapsing both the card element and its form field
+- Show/hide flags on `TextCardData`: `showFlavorText`, `showPrerequisite` — collapsing both the card element and its form field
 - `smallBodyText: boolean` — when true, reduces body text 20→16 px, flavor text 18→15 px, prerequisite text 18→14 px via `.small-body` class on `.parchment`
 - Body/prerequisite text markup toolbar has B / I / A↓ buttons (bold, italic, font-size toggle); markup is `**bold**` / `*italic*` only, parsed by `parseMarkup()` in `TextCard.svelte`
 

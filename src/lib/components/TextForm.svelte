@@ -72,10 +72,6 @@
 			placeholder={t('card.card-name-placeholder')}
 			bind:value={data.name}
 		/>
-		{#if data.showCaption}
-			<label class="field-label mt-2" for="image-caption">{t('ui.form-caption')}</label>
-			<input id="image-caption" class="field-input" type="text" placeholder={t('ui.form-placeholder-caption-text')} bind:value={data.imageCaption} />
-		{/if}
 	</section>
 
 	<!-- Card Elements -->
@@ -92,10 +88,6 @@
 					<span class="text-zinc-200">{t('ui.form-show-prerequisite')}</span>
 				</label>
 			{/if}
-			<label class="flex cursor-pointer items-center gap-3">
-				<input type="checkbox" bind:checked={data.showCaption} class="h-4 w-4 rounded accent-[#16754A]" />
-				<span class="text-zinc-200">{t('ui.form-show-caption')}</span>
-			</label>
 		</div>
 	</section>
 
